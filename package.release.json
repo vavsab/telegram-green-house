@@ -1,0 +1,8 @@
+{
+    "dependencies": {
+        "raspi": "^5.0.2",
+        "raspi-serial": "^5.0.0",
+        "rpio": "^0.9.22",
+        "i2c": "^0.2.3"
+    }
+}

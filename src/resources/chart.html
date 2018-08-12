@@ -1,0 +1,30 @@
+<html>
+    <head>
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script> 
+    </head>
+    <body>
+        <div style="width: 1000px; height: 800px">
+            <canvas id="myChart"></canvas>
+        </div>
+        <script>
+        var ctx = document.getElementById("myChart").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                // LabelsStart
+                labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+                // LabelsEnd
+                datasets: [{
+                    label: 'Температура (°C на день/час:минута)',
+                    // DataStart
+                    data: [12, 19, 3, 5, 2, 3],
+                    // DataEnd
+                    backgroundColor: 'rgba(20, 135, 0, 0.5)',
+                    borderColor: 'darkGreen',
+                    borderWidth: 1
+                }]
+            }
+        });
+        </script>
+    </body>
+</html>
