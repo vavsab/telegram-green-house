@@ -35,7 +35,7 @@ export class Bot {
         const app = new Telegraf(config.bot.token)
     
         let adminChatId:number = config.bot.adminChatId;
-        let allowedChatIds = config.bot.allowedChatIds
+        let allowedChatIds = config.bot.allowedChatIds;
         let firstTimeMessage = {};
     
         var keyboardItems = [];
@@ -57,13 +57,13 @@ export class Bot {
             }
     
             if (config.bot.grantAccessForAllUsers) {
-                return next();
+                if (!allowedChatIds.find(id => id == ctx.chat.id)) {
+                    allowedChatIds.push(ctx.chat.id);
+                }
             }
     
-            for (let i = 0; i < allowedChatIds.length; i++) {
-                if (allowedChatIds[i] == ctx.chat.id) {
-                    return next();
-                }
+            if (allowedChatIds.find(id => id == ctx.chat.id)) {
+                return next();
             }
     
             app.telegram.sendMessage(adminChatId, `⚠️ Отказано в доступе пользователю ${JSON.stringify(ctx.from)}, chat: ${JSON.stringify(ctx.chat)}`);
