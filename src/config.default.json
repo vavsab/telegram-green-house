@@ -3,16 +3,16 @@
         "isEnabled": true,
         "port": 8080,
         "title": "Умная тепличка",
-        "link": "http://green.octopan.net:8080"
+        "link": "http://demo.green.octopan.net:8080"
     },
     "webEmulator": {
         "isEnabled": true,
         "port": 8081,
-        "link": "http://green.octopan.net:8081"
+        "link": "http://demo.green.octopan.net:8081"
     },
     "bot": {
         "token": "411697622:20FXSc7ITnAAvcFck2Xun5MFr7q2-JNcvij",
-        "linkToRepository": "https://github.com/nebrius/raspi-serial",
+        "linkToRepository": "https://github.com/vavsab/telegram-green-house",
         "adminChatId": 282721686,
         "allowedChatIds": [282721686],
         "minTemperature": 17,
