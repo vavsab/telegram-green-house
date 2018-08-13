@@ -1,3 +1,7 @@
+![Demo animation](Docs/images/demo-start.gif)
+
+Developing preparations:
+
 1. INSTALL nodemon globally:
 
 `npm i nodemon -g`
