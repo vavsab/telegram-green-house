@@ -41,9 +41,10 @@
 Позиция | Цена | Комментарий | Ссылка
 --- | --- | --- | ---
 Raspberry Pi 3 Model B | $50 | | [Ссылка1](https://arduino.ua/prod1449-raspberry-pi-3-b) [Ссылка2](https://www.olx.ua/list/q-raspberry-pi-3-model-b/)
-Блок питания для Raspberry 5В 3А | $5 | Нужно брать, если пока не планируется управлять поливом или освещением через 12B. | [Ссылка1](https://arduino.ua/prod2252-blok-pitaniya-impylsnii-5v-3a-microusb)
-Датчик влажности и температуры GY-21 HTU21 | $4 | | | [Ссылка1](https://arduino.ua/prod1222-datchik-vlajnosti-i-temperatyri)
-Веб-камера | $25-$70 | Это может быть как USB, так и оригинальная камера от Raspberry. Перед покупкой USB-камеры проверьте, чтобы камера поддерживалась Raspberry. Например, [здесь](https://elinux.org/RPi_USB_Webcams) | [Raspberry-камера](https://arduino.ua/prod1386-kamera-f-5mp-s-regyliryemim-fokysom-i-nochnim-videniem) [USB-камера](https://rozetka.com.ua/logitech_webcam_c170/p159479/#tab=all)
+MicroSD карта Kingston 16GB Class 10 | $8 | Подходит и 8GB. Главное, чтобы Class 10. От флешки зависит стабильность работы Raspberry. Не стоит на этом экономить. | [Ссылка1](https://arduino.ua/prod869-microsd-karta-silicon-power-16gb-class-10--adapter)
+Блок питания для Raspberry 5В 3А | $5 | Нужно брать, если пока не планируется управлять поливом или освещением через 12B. Можно использовать имеющийся дома. Но надо смотреть, чтобы он выдавал хотя бы 2A | [Ссылка1](https://arduino.ua/prod2252-blok-pitaniya-impylsnii-5v-3a-microusb)
+Датчик влажности и температуры GY-21 HTU21 | $4 | | [Ссылка1](https://arduino.ua/prod1222-datchik-vlajnosti-i-temperatyri)
+Веб-камера | $25-$70 | Опционально. Это может быть как USB, так и оригинальная камера от Raspberry. Перед покупкой USB-камеры проверьте, чтобы камера поддерживалась Raspberry. Например, [здесь](https://elinux.org/RPi_USB_Webcams) | [Raspberry-камера](https://arduino.ua/prod1386-kamera-f-5mp-s-regyliryemim-fokysom-i-nochnim-videniem) [USB-камера](https://rozetka.com.ua/logitech_webcam_c170/p159479/#tab=all)
 2-х канальный модуль реле 5В 10А | $2 | Опционально. Для управления поливом и освещением. | [Ссылка1](https://arduino.ua/prod201-2h_kanalnoe_rele_5V_10A)
 Магнитный электрический клапан | $7 | Опционально. Для управления поливом. Подбирайте диаметр под свои трубы. Мне подошло 1/2 дюйма. | [Ссылка1](https://arduino.ua/prod369-magnitnii-elektricheskii-klapan-12-duima-zakritii-ot-elecrow)
 Блок питания импульсный 12В 200Вт | $11 | Опционально. Для управления освещением, поливом, окнами. Нужно подбирать мощность в зависимости от своих потребностей. | [Ссылка1](https://arduino.ua/prod2408-blok-pitaniya-12v-200vt-16a)
