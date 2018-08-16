@@ -41,8 +41,9 @@
 Позиция | Цена | Комментарий | Ссылка
 --- | --- | --- | ---
 Raspberry Pi 3 Model B | $50 | | [Ссылка1](https://arduino.ua/prod1449-raspberry-pi-3-b) [Ссылка2](https://www.olx.ua/list/q-raspberry-pi-3-model-b/)
-MicroSD карта Kingston 16GB Class 10 | $8 | Подходит и 8GB. Главное, чтобы Class 10. От флешки зависит стабильность работы Raspberry. Не стоит на этом экономить. | [Ссылка1](https://arduino.ua/prod869-microsd-karta-silicon-power-16gb-class-10--adapter)
+MicroSD карта Kingston 16GB Class 10 | $8 | Подходит и 8GB. Главное, чтобы Class 10. От флешки зависит стабильность работы Raspberry. Не стоит на этом экономить. | [Ссылка1](https://arduino.ua/prod869-microsd-karta-silicon-power-16gb-class-10--adapter) [Ссылка2](https://elmir.ua/flash_memory_cards/memory_card_micro_sdhc_16gb_kingston_sdc10g2_16gb.html)
 Блок питания для Raspberry 5В 3А | $5 | Нужно брать, если пока не планируется управлять поливом или освещением через 12B. Можно использовать имеющийся дома. Но надо смотреть, чтобы он выдавал хотя бы 2A | [Ссылка1](https://arduino.ua/prod2252-blok-pitaniya-impylsnii-5v-3a-microusb)
+Комплект перемычек для макетной платы МАМА-МАМА (JUMPERS-FF) - 40шт | $2 | Для соеднения Raspberry с датчиками | [Ссылка1](http://www.kosmodrom.com.ua/el.php?name=JUMPERS-FF-200MM) [Cсылка2](https://www.banggood.com/40pcs-30cm-Female-to-Female-Color-Breadboard-Cable-Jump-Wire-Jumper-p-992836.html?rmmds=detail-top-buytogether-auto__2&cur_warehouse=CN)
 Датчик влажности и температуры GY-21 HTU21 | $4 | | [Ссылка1](https://arduino.ua/prod1222-datchik-vlajnosti-i-temperatyri)
 Веб-камера | $25-$70 | Опционально. Это может быть как USB, так и оригинальная камера от Raspberry. Перед покупкой USB-камеры проверьте, чтобы камера поддерживалась Raspberry. Например, [здесь](https://elinux.org/RPi_USB_Webcams) | [Raspberry-камера](https://arduino.ua/prod1386-kamera-f-5mp-s-regyliryemim-fokysom-i-nochnim-videniem) [USB-камера](https://rozetka.com.ua/logitech_webcam_c170/p159479/#tab=all)
 2-х канальный модуль реле 5В 10А | $2 | Опционально. Для управления поливом и освещением. | [Ссылка1](https://arduino.ua/prod201-2h_kanalnoe_rele_5V_10A)
@@ -58,6 +59,7 @@ DC-DC понижающий конвертер LM2596 | $2 | Опциональн
 
 * Добавить управление окнами. Аналогичное [этому](https://www.youtube.com/watch?v=vCNMl9ZpBRg)
 * Унифицировать управление освещением, поливом и окнами.
+* Сделать уcтановку через npm install.
 * Дать возможность администратору разрешать и запрещать доступ другим пользователям.
 
 # Для разработчика
