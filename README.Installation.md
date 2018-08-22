@@ -2,6 +2,7 @@
 
 ## Схема подключения
 
+![Схема подключения](Docs/images/installation/green-house-sketch.png "Схема подключения")
 
 ## Установка бота на Raspberry
 
