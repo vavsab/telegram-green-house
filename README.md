@@ -40,7 +40,7 @@
 
 Позиция | Цена | Комментарий | Ссылка
 --- | --- | --- | ---
-Raspberry Pi 3 Model B | $50 | | [Ссылка1](https://arduino.ua/prod1449-raspberry-pi-3-b) [Ссылка2](https://www.olx.ua/list/q-raspberry-pi-3-model-b/)
+Raspberry Pi 3 Model B | $45 | | [Ссылка1](https://arduino.ua/prod1449-raspberry-pi-3-b) [Ссылка2](https://www.olx.ua/list/q-raspberry-pi-3-model-b/)
 MicroSD карта Kingston 16GB Class 10 | $8 | Подходит и 8GB. Главное, чтобы Class 10. От флешки зависит стабильность работы Raspberry. Не стоит на этом экономить. | [Ссылка1](https://arduino.ua/prod869-microsd-karta-silicon-power-16gb-class-10--adapter) [Ссылка2](https://elmir.ua/flash_memory_cards/memory_card_micro_sdhc_16gb_kingston_sdc10g2_16gb.html)
 Блок питания для Raspberry 5В 3А | $5 | Нужно брать, если пока не планируется управлять поливом или освещением через 12B. Можно использовать имеющийся дома. Но надо смотреть, чтобы он выдавал хотя бы 2A | [Ссылка1](https://arduino.ua/prod2252-blok-pitaniya-impylsnii-5v-3a-microusb)
 Комплект перемычек для макетной платы МАМА-МАМА (JUMPERS-FF) - 40шт | $2 | Для соеднения Raspberry с датчиками | [Ссылка1](http://www.kosmodrom.com.ua/el.php?name=JUMPERS-FF-200MM) [Cсылка2](https://www.banggood.com/40pcs-30cm-Female-to-Female-Color-Breadboard-Cable-Jump-Wire-Jumper-p-992836.html?rmmds=detail-top-buytogether-auto__2&cur_warehouse=CN)
