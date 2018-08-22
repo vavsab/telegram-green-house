@@ -99,12 +99,17 @@
     ```
     apt-get install -y git
     ```
-10. Удаляем временную папку `install`
+11. Устанавливаем fswebcam (для захвата изображений из камеры)
+    ```
+    apt-get install -y fswebcam
+    ```
+    *Заметка*: Если Вы используете оригинальную камеру, которая крепится при помощи шлейфа к raspberry (не USB), то ее нужно дополнительно активировать через команду `raspi-config`. В меню переходим: `Interfacing options => Camera => Yes => Finish`
+12. Удаляем временную папку `install`
     ```
     cd /home/pi/green-house
     rm -R install
     ```
-11. Перезагружаем Raspberry 
+13. Перезагружаем Raspberry 
     ```
     reboot
     ```
