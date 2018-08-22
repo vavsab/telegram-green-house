@@ -6,7 +6,7 @@
         "link": "http://demo.green.octopan.net:8080"
     },
     "webEmulator": {
-        "isEnabled": true,
+        "isEnabled": false,
         "port": 8081,
         "link": "http://demo.green.octopan.net:8081"
     },
