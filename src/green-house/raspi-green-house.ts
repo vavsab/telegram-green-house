@@ -6,7 +6,7 @@ export class RaspiGreenHouse implements IGreenHouse {
     public readonly isEmulator: boolean;
     private readonly sensor: any;
     private readonly rpio: any;
-    private readonly waterPin: number = 12; // GPIO18
+    private readonly waterPin: number = 38; // GPIO20
     private readonly lightsPin: number = 40; // GPIO21
     private readonly config: AppConfiguration;
     private serial;
