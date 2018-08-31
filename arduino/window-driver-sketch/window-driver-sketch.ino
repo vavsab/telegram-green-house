@@ -26,7 +26,8 @@ enum State {
 #define LimitSwitchEnabled          LOW
 #define LimitSwitchDisabled         HIGH
 #define LimitSwitchReleaseTimeout   1000 // Time in ms that is needed to release opposite limit switch. Fof example, to release down switch when opening a window
-#define LimitSwitchOpenCloseTimeout 4000 // Time in ms that is needed to open/close a window
+#define LimitSwitchOpenCloseTimeout 7000 // Time in ms that is needed to open/close a window
+#define LimitSwitchBounceTimeout 5000 // Time in ms for allowing contact bouncing 
 
 #define RelayUpPin      7
 #define RelayDownPin    6
@@ -38,6 +39,7 @@ enum State {
 #define ErrorLEDDisable   LOW
 
 #define MaxAllowedCurrent 5 // Amperes
+#define VoltageSurgeTimeout 100 // Time in ms for allowing big current (engine requires a big current to start)
 
 byte limitSwitchUp = LimitSwitchDisabled;
 byte limitSwitchDown = LimitSwitchDisabled;
@@ -75,7 +77,7 @@ void setup() {
 void loop() {
   limitSwitchUp = digitalRead(LimitSwitchUpPin);
   limitSwitchDown = digitalRead(LimitSwitchDownPin);
-  current = currentSensor.getCurrentDC();
+  current = -currentSensor.getCurrentDC(); // TODO: Fix minus current
 
   updateLastCommand();
   responseToMessage();
@@ -87,7 +89,7 @@ void loop() {
 void updateLastCommand() {
   while (Serial.available() > 0) {
       char incomingChar;
-      incomingChar = char(Serial.read());      
+      incomingChar = char(Serial.read());
       
       if (incomingChar == '\n') {
         messageBuffer[messageBufferIndex] = '\0';
@@ -121,15 +123,21 @@ void updateLastCommand() {
 void responseToMessage() {
   if (lastCommand != CommandState) 
     return;
-  
+
+  Serial.flush(); // Finish sending debug data
+  digitalWrite(UARTPin, RS485Transmit);
+  delay(1); // It takes some time to set the pin
   Serial.println(getCurrentState());
+  Serial.flush(); // Finish sending RS485 data
+  digitalWrite(UARTPin, RS485Receive);
+  delay(1); // It takes some time to set the pin
 }
 
 void updateState() {
   State oldState = state;
   unsigned long msOnCurrentState = millis() - lastStateChangeTime;
 
-  if (current > MaxAllowedCurrent) {
+  if (current > MaxAllowedCurrent && msOnCurrentState > VoltageSurgeTimeout) {
     setError("Too high current on state " + getCurrentState(), 10);
   } else if (lastCommand == CommandReset) {
     state = StateStart;
@@ -159,7 +167,7 @@ void updateState() {
         
         if (limitSwitchUp == LimitSwitchEnabled) {
           setError("Closed failure. Up limit has been enabled.", 2);
-        } else if (limitSwitchDown == LimitSwitchDisabled) {
+        } else if (limitSwitchDown == LimitSwitchDisabled && msOnCurrentState > LimitSwitchBounceTimeout) {
           setError("Closed failure. Down limit has been disabled.", 3);
         } else if (lastCommand == CommandOpen) {
           state = StateOpening;
@@ -191,7 +199,7 @@ void updateState() {
         
         if (limitSwitchDown == LimitSwitchEnabled) {
           setError("Open failure. Down limit has been enabled.", 6);
-        } else if (limitSwitchUp == LimitSwitchDisabled) {
+        } else if (limitSwitchUp == LimitSwitchDisabled && msOnCurrentState > LimitSwitchBounceTimeout) {
           setError("Open failure. Up limit has been disabled.", 7);
         } else if (lastCommand == CommandClose) {
           state = StateClosing;
