@@ -1,17 +1,28 @@
 import { IGreenHouse, SensorsData, WindowCommand } from "./green-house";
 import { exec } from 'child_process';
 import { AppConfiguration } from "../app-configuration";
+import * as EventEmitter from "events";
 
 export class RaspiGreenHouse implements IGreenHouse {
     public readonly isEmulator: boolean;
+    public readonly eventEmitter : EventEmitter;
     private readonly sensor: any;
     private readonly rpio: any;
+
+    private readonly max485Pin: number = 12; // GPIO18
+    private readonly max485Transmit: number;
+    private readonly max485Receive: number;
+
     private readonly waterPin: number = 38; // GPIO20
     private readonly lightsPin: number = 40; // GPIO21
+    private readonly relayOff: number;
+    private readonly relayOn: number;
+
     private readonly config: AppConfiguration;
     private serial;
 
     constructor(config: AppConfiguration) {
+        this.eventEmitter = new EventEmitter();
         this.config = config;
         this.isEmulator = false;
         const htu21d = require('./htu21d-i2c');
@@ -20,11 +31,15 @@ export class RaspiGreenHouse implements IGreenHouse {
         const rpio = require('rpio');
         this.rpio = rpio;
 
-        rpio.open(this.waterPin, rpio.OUTPUT, rpio.LOW);
-        rpio.write(this.waterPin, rpio.HIGH); // switch off on start
+        this.max485Transmit = rpio.HIGH;
+        this.max485Receive =  rpio.LOW;
 
-        rpio.open(this.lightsPin, rpio.OUTPUT, rpio.LOW);
-        rpio.write(this.lightsPin, rpio.HIGH); // switch off on start
+        this.relayOff = rpio.HIGH;
+        this.relayOn = rpio.LOW;
+
+        rpio.open(this.waterPin, rpio.OUTPUT, this.relayOff);
+        rpio.open(this.lightsPin, rpio.OUTPUT, this.relayOff);
+        rpio.open(this.max485Pin, rpio.OUTPUT, this.max485Receive);
 
         const raspi = require('raspi').init;
         const Serial = require('raspi-serial').Serial;
@@ -37,7 +52,8 @@ export class RaspiGreenHouse implements IGreenHouse {
                 this.serial.on('data', (data) => {
                     buffer += data.toString();
                     if (buffer.indexOf('\n') != -1){
-                        console.log(buffer);
+                        this.eventEmitter.emit('serial-data', buffer);
+                        console.log('Serial >' + buffer);
                         buffer = '';
                     }
                 });
@@ -57,11 +73,11 @@ export class RaspiGreenHouse implements IGreenHouse {
     }
 
     public setWaterValve(isOpen: boolean): void {
-        this.rpio.write(this.waterPin, isOpen ? this.rpio.LOW : this.rpio.HIGH);
+        this.rpio.write(this.waterPin, isOpen ? this.relayOn : this.relayOff);
     }
 
     public setLights(isSwitchedOn: boolean): void {
-        this.rpio.write(this.lightsPin, isSwitchedOn ? this.rpio.LOW : this.rpio.HIGH);
+        this.rpio.write(this.lightsPin, isSwitchedOn ? this.relayOn : this.relayOff);
     }
 
     public async takePhoto(): Promise<string> {
@@ -98,6 +114,13 @@ export class RaspiGreenHouse implements IGreenHouse {
     }
 
     public sendWindowCommand(command: WindowCommand): void {
-        this.serial.write(command.toSerialCommand());
+        this.rpio.write(this.max485Pin, this.max485Transmit);
+        setTimeout(() => {
+            this.serial.write(command.toSerialCommand(), () => {
+                setTimeout(() => {
+                    this.rpio.write(this.max485Pin, this.max485Receive);
+                }, 10);
+            });
+        }, 10);
     }
 }

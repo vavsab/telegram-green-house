@@ -1,13 +1,16 @@
 import { Markup } from 'telegraf';
 import { IBotModule, InitializeContext } from './bot-module'
 import { WindowCommand } from '../green-house/green-house';
+import { RaspiGreenHouse } from '../green-house/raspi-green-house';
 
 export class Windows implements IBotModule {
-    private readonly manualStartKeyboard = Markup.inlineKeyboard([
+    private readonly manualStartKeyboard = Markup.inlineKeyboard([[
         Markup.callbackButton('Открыть', 'window:open'),
         Markup.callbackButton('Закрыть', 'window:close'),
-        Markup.callbackButton('Сброс', 'window:reset')
-    ])
+    ], [
+        Markup.callbackButton('Сброс', 'window:reset'),
+        Markup.callbackButton('Состояние', 'window:state')
+    ]])
     .extra(); 
 
     initializeMenu(addKeyboardItem: any): void {
@@ -32,6 +35,15 @@ export class Windows implements IBotModule {
         context.configureAction(/window\:reset/, ctx => {
             context.greenHouse.sendWindowCommand(new WindowCommand(5, 'reset'));
             ctx.reply(`️️️️️️⚠️ Окна переинициализируются...`);
+        });
+
+        context.configureAction(/window\:state/, ctx => {
+            context.greenHouse.sendWindowCommand(new WindowCommand(5, 'state'));
+            ctx.reply(`️️️️️️⚠️ Запрос на состояние окна выслан...`);
+        });
+
+        (<RaspiGreenHouse>context.greenHouse).eventEmitter.on('serial-data', msg => {
+            context.botApp.telegram.sendMessage(context.adminChatId, msg);
         });
     }
 }
