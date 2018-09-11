@@ -137,7 +137,7 @@ void updateState() {
   State oldState = state;
   unsigned long msOnCurrentState = millis() - lastStateChangeTime;
 
-  if (current > MaxAllowedCurrent && msOnCurrentState > VoltageSurgeTimeout) {
+  if (state != StateError && current > MaxAllowedCurrent && msOnCurrentState > VoltageSurgeTimeout) {
     setError("Too high current on state " + getCurrentState(), 10);
   } else if (lastCommand == CommandReset) {
     state = StateStart;
@@ -243,6 +243,9 @@ void setOutPins() {
   digitalWrite(RelayUpPin, relayUp);
   digitalWrite(RelayDownPin, relayDown);
   digitalWrite(ErrorLEDPin, errorLED);
+
+  // To debug without RS485 set to transmit
+  digitalWrite(UARTPin, RS485Receive);
 }
 
 void setError(String errorText, int code) {
