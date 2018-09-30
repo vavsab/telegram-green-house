@@ -54,6 +54,8 @@ export class BotConfiguration {
     public grantAccessForAllUsers: boolean;
 
     public modules: BotModules;
+
+    public windowAddresses: number[];
 }
 
 export class BotModules {

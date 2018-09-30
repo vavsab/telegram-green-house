@@ -1,3 +1,5 @@
+import { WindowsManager } from "./windows/windows-manager";
+
 export interface IGreenHouse {
     readonly isEmulator: boolean;
 
@@ -11,26 +13,11 @@ export interface IGreenHouse {
 
     recordVideo(seconds: number): Promise<string>;
 
-    sendWindowCommand(command: WindowCommand): void;
+    getWindowsManager(): WindowsManager;
 }
 
 export class SensorsData {
     public temperature: number;
 
     public humidity: number;
-}
-
-export class WindowCommand {
-    public address: number;
-
-    public command: string;
-
-    constructor(address: number, command: string) {
-        this.address = address;
-        this.command = command;
-    }
-
-    public toSerialCommand(): string {
-        return `${this.address}#${this.command}\n`;
-    }
 }

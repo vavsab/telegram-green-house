@@ -1,12 +1,15 @@
-import { IGreenHouse, SensorsData, WindowCommand } from "./green-house";
+import { IGreenHouse, SensorsData } from "./green-house";
 import * as events from "events";
 import { AppConfiguration } from "../app-configuration";
 import * as resources from "../resources";
+import { WindowsManager } from "./windows/windows-manager";
+import { EmulatorDataBus } from "./windows/bus/emulator-data-bus";
 
 export class EmulatorGreenHouse implements IGreenHouse {
     public readonly isEmulator: boolean;
     public readonly eventEmitter: events;
     public readonly config: AppConfiguration;
+    private readonly windowsManager: WindowsManager;
     public sensorsData : SensorsData;
     public isLightsOn: boolean;
     public isWaterOn: boolean;
@@ -18,6 +21,8 @@ export class EmulatorGreenHouse implements IGreenHouse {
         this.isLightsOn = false;
         this.eventEmitter = new events();
         this.config = config;
+
+        this.windowsManager = new WindowsManager(config.bot.windowAddresses, new EmulatorDataBus());
     }
 
     public getSensorsData(): Promise<SensorsData> {
@@ -51,7 +56,7 @@ export class EmulatorGreenHouse implements IGreenHouse {
         })
     }
 
-    public sendWindowCommand(command: WindowCommand): void {
-        console.log(`Emulator > Sent serial command: ${command.toSerialCommand()}`)
+    public getWindowsManager(): WindowsManager {
+        return this.windowsManager;
     }
 }
