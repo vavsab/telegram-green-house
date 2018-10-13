@@ -23,6 +23,7 @@
         "intervalBetweenWarningsInMinutes": 30,
         "switchOnLightsTimeRange": "16:00-18:00",
         "grantAccessForAllUsers": false,
+        "windowAddresses": [1, 2, 5],
         "modules": {
             "sensors": true,
             "settings": true,

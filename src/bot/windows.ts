@@ -6,6 +6,7 @@ import { WindowState } from '../green-house/windows/window-state';
 
 export class Windows implements IBotModule {
     private readonly _buttonsPerLine: number = 3;
+    private readonly _delayBetweenGlobalWindowCommandsInMs = 7000;
     private _windowsManager: WindowsManager;
 
     public initializeMenu(addKeyboardItem: any): void {
@@ -63,6 +64,11 @@ export class Windows implements IBotModule {
                 : [address]
 
             for (let i = 0; i < windows.length; i++) {
+                if (i > 1) {
+                    // Delay between windows. It may give a big current if open windows simultaneously
+                    await new Promise(resolve => setTimeout(resolve, this._delayBetweenGlobalWindowCommandsInMs));
+                }
+
                 await this._windowsManager.sendCommand(windows[i], command);
             }
 
@@ -71,7 +77,7 @@ export class Windows implements IBotModule {
     }
 
     private async replyWithStatus(replyCallback: any, addresses: number[], selectWindow: boolean = false): Promise<void> {
-        let result: string = 'Окна:\n';
+        let result: string = '';
 
         let states: WindowState[] = [];
 
@@ -108,7 +114,7 @@ export class Windows implements IBotModule {
             }
 
             states.push(response.state);
-            result += `Окно ${address}: ${stateString}\n`;
+            result += `Окно ${address}:${stateString}\n`;
         }
 
         let buttonInfos: ButtonInfo[] = [];
@@ -116,7 +122,7 @@ export class Windows implements IBotModule {
         if (selectWindow) {
             buttonInfos.push({ title: '⬅️', action: this.createAddressCommand('refresh', this._windowsManager.addresses) })
             for (let i = 0; i < addresses.length; i++) { 
-                buttonInfos.push({ title: `Окно ${i}`, action: this.createAddressCommand('refresh', [addresses[i]]) });    
+                buttonInfos.push({ title: `Окно ${addresses[i]}`, action: this.createAddressCommand('refresh', [addresses[i]]) });    
             }
         } else {
             if (this._windowsManager.addresses.length > 1 && addresses.length == 1) {

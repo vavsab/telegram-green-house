@@ -7,6 +7,9 @@ export class RS485DataBus extends DataBus {
     private readonly rpio: any;
     private serial;
     private buffer: string = '';
+    private readonly maxBufferSize = 1000;
+    private readonly responseTimeoutInMs = 150;
+    private readonly pinSwitchTimeoutInMs = 10;
 
     constructor() {
         super();
@@ -27,9 +30,11 @@ export class RS485DataBus extends DataBus {
             this.serial.open(() => {
                 
                 this.serial.on('data', (data) => {
-                    this.buffer += data.toString();
-                    if (this.buffer.indexOf('\n') != -1){
-                        console.log('Serial >' + this.buffer);
+                    this.buffer += (<String>data.toString()).replace('\r', '').replace('\n', '');
+
+                    if (this.buffer.length > this.maxBufferSize) {
+                        this.buffer = '';
+                        console.log(`rs485-data-bus > Cleared buffer because its size became more than ${this.maxBufferSize}`);
                     }
                 });
         
@@ -41,17 +46,18 @@ export class RS485DataBus extends DataBus {
         return new Promise<string> (resolve => {
             this.buffer = '';
             setTimeout(() => {
-                this.serial.write(command, () => {
+                this.serial.write(`${command}\n`, () => {
                     setTimeout(() => {
                         this.rpio.write(this.max485Pin, this.max485Receive);
                         setTimeout(() => {
                             this.rpio.write(this.max485Pin, this.max485Transmit);
+                            console.log(`rs485-data-bus > Response for command '${command}': '${this.buffer}'`);
                             resolve(this.buffer);
                             this.buffer = '';
-                        }, 200);
-                    }, 10);
+                        }, this.responseTimeoutInMs);
+                    }, this.pinSwitchTimeoutInMs);
                 });
-            }, 10);
+            }, this.pinSwitchTimeoutInMs);
         });
     }
 }
