@@ -64,7 +64,7 @@ export class Windows implements IBotModule {
                 : [address]
 
             for (let i = 0; i < windows.length; i++) {
-                if (i > 1) {
+                if (i > 0) {
                     // Delay between windows. It may give a big current if open windows simultaneously
                     await new Promise(resolve => setTimeout(resolve, this._delayBetweenGlobalWindowCommandsInMs));
                 }
@@ -114,7 +114,7 @@ export class Windows implements IBotModule {
             }
 
             states.push(response.state);
-            result += `Окно ${address}:${stateString}\n`;
+            result += `Окно ${address}: ${stateString}\n`;
         }
 
         let buttonInfos: ButtonInfo[] = [];
