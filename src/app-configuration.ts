@@ -4,6 +4,8 @@ export class AppConfiguration {
     public webEmulator: WebEmulatorConfiguration;
 
     public bot: BotConfiguration;
+
+    public language: string;
 }
 
 export class WebPanelConfiguration {

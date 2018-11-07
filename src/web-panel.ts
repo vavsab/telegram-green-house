@@ -5,6 +5,7 @@ import { SensorsData } from './green-house/green-house';
 import * as socket from 'socket.io';
 import * as resources from './resources';
 import { createServer } from 'http';
+import { gettext } from './gettext';
 
 export class WebPanel {
     private _latestResult: SensorsData = {
@@ -44,7 +45,12 @@ export class WebPanel {
             res.json({ 
                 title: config.webPanel.title,
                 link: config.webPanel.link,
-                linkToRepository: config.bot.linkToRepository
+                linkToRepository: config.bot.linkToRepository,
+                lang: {
+                    temperature: gettext('Temperature'),
+                    humidity: gettext('Humidity'),
+                    lastUpdate: gettext('Last update')
+                }
             });
         });
         

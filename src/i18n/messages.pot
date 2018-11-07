@@ -1,0 +1,332 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#: src/bot/water.ts:26
+msgid "{hour} hour"
+msgstr ""
+
+#: src/bot/video.ts:10
+#: src/bot/water.ts:24
+#: src/bot/water.ts:25
+msgid "{min} min"
+msgstr ""
+
+#: src/bot/water.ts:143
+msgid "{min} min remained"
+msgstr ""
+
+#: src/bot/video.ts:7
+#: src/bot/video.ts:8
+#: src/bot/video.ts:9
+msgid "{sec} sec"
+msgstr ""
+
+#: src/bot.ts:70
+msgid "Access denied for user {user}, chat: {chat}"
+msgstr ""
+
+#: src/bot/settings.ts:19
+msgid "Allowed range"
+msgstr ""
+
+#: src/bot/water.ts:129
+msgid "auto"
+msgstr ""
+
+#: src/bot/water.ts:220
+msgid "Automatic mode is set"
+msgstr ""
+
+#: src/bot/chart.ts:12
+msgid "Chart"
+msgstr ""
+
+#: src/bot.ts:102
+msgid "Choose a command"
+msgstr ""
+
+#: src/bot/water.ts:223
+msgid "Choose a setting"
+msgstr ""
+
+#: src/bot/video.ts:20
+msgid "Choose video duration"
+msgstr ""
+
+#: src/bot/windows.ts:136
+msgid "Close"
+msgstr ""
+
+#: src/bot/windows.ts:101
+msgid "Closed"
+msgstr ""
+
+#: src/bot/windows.ts:104
+msgid "Closing"
+msgstr ""
+
+#: src/bot/windows.ts:51
+msgid "Closing..."
+msgstr ""
+
+#: src/bot/chart.ts:19
+msgid "Creating chart..."
+msgstr ""
+
+#: src/bot/sensors.ts:21
+msgid "Data is not available. Seems that server has just started. Please try a bit later."
+msgstr ""
+
+#: src/bot/windows.ts:92
+msgid "Data transmit failure"
+msgstr ""
+
+#: src/bot/settings.ts:52
+msgid "Database: *{size}* MB"
+msgstr ""
+
+#: src/bot/settings.ts:22
+msgid "Delay before taking a photo: *{sec} sec*"
+msgstr ""
+
+#: src/bot/weather.ts:14
+msgid "Downloading weather..."
+msgstr ""
+
+#: src/bot/settings.ts:64
+msgid "Emulator"
+msgstr ""
+
+#: src/bot/photo.ts:19
+#: src/bot/video.ts:33
+#: src/bot/windows.ts:98
+msgid "Failure"
+msgstr ""
+
+#: src/web-emulator.ts:26
+msgid "Greenhouse emulator"
+msgstr ""
+
+#: src/bot/settings.ts:43
+msgid "Hard drive: *{percent}%* (*{free}* GB free of *{total}* GB)"
+msgstr ""
+
+#: src/bot/water.ts:199
+msgid "How much time should the watering be turned on?"
+msgstr ""
+
+#: src/web-emulator.ts:28
+#: src/web-panel.ts:51
+msgid "Humidity"
+msgstr ""
+
+#: src/web-panel.ts:52
+msgid "Last update"
+msgstr ""
+
+#: src/web-emulator.ts:30
+msgid "Lights"
+msgstr ""
+
+#: src/bot/settings.ts:23
+msgid "Lights on range: {range}"
+msgstr ""
+
+#: src/web-emulator.ts:31
+msgid "Loading..."
+msgstr ""
+
+#: src/bot/water.ts:127
+msgid "manual"
+msgstr ""
+
+#: src/bot/water.ts:215
+msgid "Manual mode is set"
+msgstr ""
+
+#: src/bot/windows.ts:95
+msgid "Not responding"
+msgstr ""
+
+#: src/bot/settings.ts:20
+msgid "Notification on exceeding: every *{min} min*"
+msgstr ""
+
+#: src/bot/water.ts:148
+msgid "off"
+msgstr ""
+
+#: src/bot/water.ts:140
+msgid "on"
+msgstr ""
+
+#: src/bot/windows.ts:110
+msgid "Opening"
+msgstr ""
+
+#: src/bot/windows.ts:48
+msgid "Opening..."
+msgstr ""
+
+#: src/bot/photo.ts:6
+msgid "Photo"
+msgstr ""
+
+#: src/bot/photo.ts:12
+msgid "Photo is creating..."
+msgstr ""
+
+#: src/bot/video.ts:26
+msgid "Please wait while video with duration of *{duration} sec* is recording..."
+msgstr ""
+
+#: src/bot/windows.ts:144
+msgid "Reset"
+msgstr ""
+
+#: src/bot/windows.ts:54
+msgid "Resetting..."
+msgstr ""
+
+#: src/bot/settings.ts:21
+msgid "Save sensors data: every *{min} min*"
+msgstr ""
+
+#: src/bot/sensors.ts:7
+msgid "Sensors"
+msgstr ""
+
+#: src/bot/windows.ts:147
+msgid "Separately"
+msgstr ""
+
+#: src/bot/settings.ts:10
+#: src/bot/water.ts:12
+#: src/bot/water.ts:18
+msgid "Settings"
+msgstr ""
+
+#: src/bot/water.ts:138
+msgid "State:"
+msgstr ""
+
+#: src/web-emulator.ts:33
+msgid "Telegram bot"
+msgstr ""
+
+#: src/web-emulator.ts:27
+#: src/web-panel.ts:50
+msgid "Temperature"
+msgstr ""
+
+#: src/bot/chart.ts:66
+msgid "Temperature (°C on day/hour:minute)"
+msgstr ""
+
+#: src/bot/sensors.ts:16
+#: src/bot/water.ts:133
+msgid "test mode"
+msgstr ""
+
+#: src/bot/water.ts:145
+msgid "till turning off manually"
+msgstr ""
+
+#: src/bot/water.ts:34
+msgid "To auto"
+msgstr ""
+
+#: src/bot/water.ts:33
+msgid "To manual"
+msgstr ""
+
+#: src/bot/water.ts:10
+#: src/bot/water.ts:17
+msgid "Turn off"
+msgstr ""
+
+#: src/bot/water.ts:11
+msgid "Turn on"
+msgstr ""
+
+#: src/bot/water.ts:153
+msgid "Turned on time in automatic mode"
+msgstr ""
+
+#: src/bot/windows.ts:113
+msgid "Unknown state"
+msgstr ""
+
+#: src/bot/windows.ts:34
+msgid "Updating list..."
+msgstr ""
+
+#: src/bot/windows.ts:29
+msgid "Updating..."
+msgstr ""
+
+#: src/bot/video.ts:15
+msgid "Video"
+msgstr ""
+
+#: src/bot/water.ts:40
+msgid "Water"
+msgstr ""
+
+#: src/bot/water.ts:125
+msgid "Water control:"
+msgstr ""
+
+#: src/web-emulator.ts:29
+msgid "Watering"
+msgstr ""
+
+#: src/bot/water.ts:192
+msgid "Watering is on"
+msgstr ""
+
+#: src/bot/water.ts:237
+msgid "Watering is turned off"
+msgstr ""
+
+#: src/bot/water.ts:232
+msgid "Watering is turned off and reset into manual mode"
+msgstr ""
+
+#: src/bot/weather.ts:7
+msgid "Weather"
+msgstr ""
+
+#: src/web-emulator.ts:32
+msgid "Web panel"
+msgstr ""
+
+#: src/bot/settings.ts:60
+msgid "Website"
+msgstr ""
+
+#: src/bot/windows.ts:118
+#: src/bot/windows.ts:126
+msgid "Window"
+msgstr ""
+
+#: src/bot/windows.ts:14
+msgid "Windows"
+msgstr ""
+
+#: src/bot.ts:72
+msgid ""
+"You have no access to this bot.\n"
+" If you have any questions, please write @ivan_sabelnikov"
+msgstr ""
+
+#: src/bot/windows.ts:139
+msgctxt "Action"
+msgid "Open"
+msgstr ""
+
+#: src/bot/windows.ts:107
+msgctxt "State"
+msgid "Open"
+msgstr ""

@@ -1,0 +1,338 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+
+#: src/bot/water.ts:26
+msgid "{hour} hour"
+msgstr "{hour} час"
+
+#: src/bot/video.ts:10 src/bot/water.ts:24 src/bot/water.ts:25
+msgid "{min} min"
+msgstr "{min} мин"
+
+#: src/bot/water.ts:143
+msgid "{min} min remained"
+msgstr "ещё {min} мин"
+
+#: src/bot/video.ts:7 src/bot/video.ts:8 src/bot/video.ts:9
+msgid "{sec} sec"
+msgstr "{sec} сек"
+
+#: src/bot.ts:70
+msgid "Access denied for user {user}, chat: {chat}"
+msgstr "Отказано в доступе для пользователю {user}, чат: {chat}"
+
+#: src/bot/settings.ts:19
+msgid "Allowed range"
+msgstr "Допустимый диапазон"
+
+#: src/bot/water.ts:129
+msgid "auto"
+msgstr "авто"
+
+#: src/bot/water.ts:220
+msgid "Automatic mode is set"
+msgstr "Установлен автоматический режим"
+
+#: src/bot/chart.ts:12
+msgid "Chart"
+msgstr "График"
+
+#: src/bot.ts:102
+msgid "Choose a command"
+msgstr "Выберите команду"
+
+#: src/bot/water.ts:223
+msgid "Choose a setting"
+msgstr "Выберите настройку"
+
+#: src/bot/video.ts:20
+msgid "Choose video duration"
+msgstr "Выберите длительность видео"
+
+#: src/bot/windows.ts:136
+msgid "Close"
+msgstr "Закрыть"
+
+#: src/bot/windows.ts:101
+msgid "Closed"
+msgstr "Закрыто"
+
+#: src/bot/windows.ts:104
+msgid "Closing"
+msgstr "Закрывается"
+
+#: src/bot/windows.ts:51
+msgid "Closing..."
+msgstr "Закрываю..."
+
+#: src/bot/chart.ts:19
+msgid "Creating chart..."
+msgstr "Создаю график..."
+
+#: src/bot/sensors.ts:21
+msgid ""
+"Data is not available. Seems that server has just started. Please try a bit "
+"later."
+msgstr ""
+"Данные недоступны. Кажется, что сервер только запустился. Пожалуйста, "
+"попробуйте немного позже."
+
+#: src/bot/windows.ts:92
+msgid "Data transmit failure"
+msgstr "Ошибка передачи данных"
+
+#: src/bot/settings.ts:52
+msgid "Database: *{size}* MB"
+msgstr "База данных: *{size}* MB"
+
+#: src/bot/settings.ts:22
+msgid "Delay before taking a photo: *{sec} sec*"
+msgstr "Задержка перед снимком: *{sec} сек*"
+
+#: src/bot/weather.ts:14
+msgid "Downloading weather..."
+msgstr "Скачиваю погоду..."
+
+#: src/bot/settings.ts:64
+msgid "Emulator"
+msgstr "Эмулятор"
+
+#: src/bot/photo.ts:19 src/bot/video.ts:33 src/bot/windows.ts:98
+msgid "Failure"
+msgstr "Ошибка"
+
+#: src/web-emulator.ts:26
+msgid "Greenhouse emulator"
+msgstr "Эмулятор умной теплички"
+
+#: src/bot/settings.ts:43
+msgid "Hard drive: *{percent}%* (*{free}* GB free of *{total}* GB)"
+msgstr "Жесткий диск: *{percent}%* (*{free}* GB свободно из *{total}* GB)"
+
+#: src/bot/water.ts:199
+msgid "How much time should the watering be turned on?"
+msgstr "На сколько включить полив?"
+
+#: src/web-emulator.ts:28 src/web-panel.ts:51
+msgid "Humidity"
+msgstr "Влажность"
+
+#: src/web-panel.ts:52
+msgid "Last update"
+msgstr "Последнее обновление"
+
+#: src/web-emulator.ts:30
+msgid "Lights"
+msgstr "Свет"
+
+#: src/bot/settings.ts:23
+msgid "Lights on range: {range}"
+msgstr "Освещение: {range}"
+
+#: src/web-emulator.ts:31
+msgid "Loading..."
+msgstr "Загрузка..."
+
+#: src/bot/water.ts:127
+msgid "manual"
+msgstr "ручное"
+
+#: src/bot/water.ts:215
+msgid "Manual mode is set"
+msgstr "Установлено ручное управление"
+
+#: src/bot/windows.ts:95
+msgid "Not responding"
+msgstr "Не отвечает"
+
+#: src/bot/settings.ts:20
+msgid "Notification on exceeding: every *{min} min*"
+msgstr "Уведомление о превышении: каждые *{min} мин*"
+
+#: src/bot/water.ts:148
+msgid "off"
+msgstr "выключено"
+
+#: src/bot/water.ts:140
+msgid "on"
+msgstr "включено"
+
+#: src/bot/windows.ts:110
+msgid "Opening"
+msgstr "Открывается"
+
+#: src/bot/windows.ts:48
+msgid "Opening..."
+msgstr "Открываю…"
+
+#: src/bot/photo.ts:6
+msgid "Photo"
+msgstr "Фото"
+
+#: src/bot/photo.ts:12
+msgid "Photo is creating..."
+msgstr "Фото снимается..."
+
+#: src/bot/video.ts:26
+msgid ""
+"Please wait while video with duration of *{duration} sec* is recording..."
+msgstr ""
+"Пожалуйста, подождите, пока видео длиной *{duration} сек* запишется..."
+
+#: src/bot/windows.ts:144
+msgid "Reset"
+msgstr "Сброс"
+
+#: src/bot/windows.ts:54
+msgid "Resetting..."
+msgstr "Сбрасываю..."
+
+#: src/bot/settings.ts:21
+msgid "Save sensors data: every *{min} min*"
+msgstr "Сохранять данные датчиков: каждые *{min} мин*"
+
+#: src/bot/sensors.ts:7
+msgid "Sensors"
+msgstr "Датчики"
+
+#: src/bot/windows.ts:147
+msgid "Separately"
+msgstr "Отдельно"
+
+#: src/bot/settings.ts:10 src/bot/water.ts:12 src/bot/water.ts:18
+msgid "Settings"
+msgstr "Настройки"
+
+#: src/bot/water.ts:138
+msgid "State:"
+msgstr "Состояние:"
+
+#: src/web-emulator.ts:33
+msgid "Telegram bot"
+msgstr "Telegram бот"
+
+#: src/web-emulator.ts:27 src/web-panel.ts:50
+msgid "Temperature"
+msgstr "Температура"
+
+#: src/bot/chart.ts:66
+msgid "Temperature (°C on day/hour:minute)"
+msgstr "Температура (°C на день/час:минута)"
+
+#: src/bot/sensors.ts:16 src/bot/water.ts:133
+msgid "test mode"
+msgstr "тестовый режим"
+
+#: src/bot/water.ts:145
+msgid "till turning off manually"
+msgstr "до отключения вручную"
+
+#: src/bot/water.ts:34
+msgid "To auto"
+msgstr "В авто"
+
+#: src/bot/water.ts:33
+msgid "To manual"
+msgstr "В ручное"
+
+#: src/bot/water.ts:10 src/bot/water.ts:17
+msgid "Turn off"
+msgstr "Выключить"
+
+#: src/bot/water.ts:11
+msgid "Turn on"
+msgstr "Включить"
+
+#: src/bot/water.ts:153
+msgid "Turned on time in automatic mode"
+msgstr "Включения для автоматического режима"
+
+#: src/bot/windows.ts:113
+msgid "Unknown state"
+msgstr "Неизвестное состояние"
+
+#: src/bot/windows.ts:34
+msgid "Updating list..."
+msgstr "Обновляю список..."
+
+#: src/bot/windows.ts:29
+msgid "Updating..."
+msgstr "Обновляю…"
+
+#: src/bot/video.ts:15
+msgid "Video"
+msgstr "Видео"
+
+#: src/bot/water.ts:40
+msgid "Water"
+msgstr "Полив"
+
+#: src/bot/water.ts:125
+msgid "Water control:"
+msgstr "Контроль полива"
+
+#: src/web-emulator.ts:29
+msgid "Watering"
+msgstr "Полив"
+
+#: src/bot/water.ts:192
+msgid "Watering is on"
+msgstr "Полив включен"
+
+#: src/bot/water.ts:237
+msgid "Watering is turned off"
+msgstr "Полив выключен"
+
+#: src/bot/water.ts:232
+msgid "Watering is turned off and reset into manual mode"
+msgstr "Полив выключен и переведен в ручной режим"
+
+#: src/bot/weather.ts:7
+msgid "Weather"
+msgstr "Погода"
+
+#: src/web-emulator.ts:32
+msgid "Web panel"
+msgstr "Веб-панель"
+
+#: src/bot/settings.ts:60
+msgid "Website"
+msgstr "Вебсайт"
+
+#: src/bot/windows.ts:118 src/bot/windows.ts:126
+msgid "Window"
+msgstr "Окно"
+
+#: src/bot/windows.ts:14
+msgid "Windows"
+msgstr "Окна"
+
+#: src/bot.ts:72
+msgid ""
+"You have no access to this bot.\n"
+" If you have any questions, please write @ivan_sabelnikov"
+msgstr ""
+"У Вас нет доступа для использования этого бота.\n"
+"В случае необходимости обратитесь к @ivan_sabelnikov"
+
+#: src/bot/windows.ts:139
+msgctxt "Action"
+msgid "Open"
+msgstr "Открыть"
+
+#: src/bot/windows.ts:107
+msgctxt "State"
+msgid "Open"
+msgstr "Открыто"

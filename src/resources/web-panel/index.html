@@ -31,13 +31,13 @@
     </div>
 
   <div class="container" style="font-size: 2em;" ng-cloak>
-    Температура <span class="glyphicon glyphicon-signal"></span>:  
+    {{$ctrl.config.lang.temperature}} <span class="glyphicon glyphicon-signal"></span>:  
     <span class="label label-success">{{$ctrl.sensors.temperature | number:2}} °C</span>
     <br />
-    Влажность <span class="glyphicon glyphicon-tint"></span>: 
+    {{$ctrl.config.lang.humidity}} <span class="glyphicon glyphicon-tint"></span>: 
     <span class="label label-success">{{$ctrl.sensors.humidity | number:2}} %</span>
     <br />
-    Последнее обновление <span class="glyphicon glyphicon-refresh"></span>: 
+    {{$ctrl.config.lang.lastUpdate}} <span class="glyphicon glyphicon-refresh"></span>: 
     <span class="label label-default">{{$ctrl.lastUpdate | date:'mediumTime'}}</span>
   </div>
 </body>

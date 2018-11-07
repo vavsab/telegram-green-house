@@ -2,42 +2,42 @@ import { IBotModule, InitializeContext } from './bot-module'
 import { Markup } from 'telegraf';
 import * as moment from 'moment';
 import * as _ from 'lodash';
+import { gettext } from '../gettext';
 
 export class Water implements IBotModule {
-    private readonly switcherPin = 12; // GPIO18
 
     private readonly manualKeyboard = Markup.inlineKeyboard([
-        Markup.callbackButton('🚫 Выключить', 'water:stop'),
-        Markup.callbackButton('✅ Включить', 'water:start'),
-        Markup.callbackButton('🔧 Настройки', 'water:settings'),
+        Markup.callbackButton(`🚫 ${gettext('Turn off')}`, 'water:stop'),
+        Markup.callbackButton(`✅ ${gettext('Turn on')}`, 'water:start'),
+        Markup.callbackButton(`🔧 ${gettext('Settings')}`, 'water:settings'),
     ])
     .extra();
     
     private readonly autoKeyboard = Markup.inlineKeyboard([
-        Markup.callbackButton('🚫 Выключить', 'water:stop'),
-        Markup.callbackButton('🔧 Настройки', 'water:settings'),
+        Markup.callbackButton(`🚫 ${gettext('Turn off')}`, 'water:stop'),
+        Markup.callbackButton(`🔧 ${gettext('Settings')}`, 'water:settings'),
     ])
     .extra();
     
     private readonly manualStartKeyboard = Markup.inlineKeyboard([
         Markup.callbackButton('⬅️', 'water:start:back'),
-        Markup.callbackButton('5 мин', 'water:start:5'),
-        Markup.callbackButton('30 мин', 'water:start:30'),
-        Markup.callbackButton('1 час', 'water:start:60'),
+        Markup.callbackButton(gettext('{min} min').formatUnicorn({min: 5}), 'water:start:5'),
+        Markup.callbackButton(gettext('{min} min').formatUnicorn({min: 30}), 'water:start:30'),
+        Markup.callbackButton(gettext('{hour} hour').formatUnicorn({hour: 1}), 'water:start:60'),
         Markup.callbackButton('∞', 'water:start:-1')
     ])
     .extra();
     
     private readonly settingsKeyboard = Markup.inlineKeyboard([
         Markup.callbackButton('⬅️', 'water:settings:back'),
-        Markup.callbackButton('В ручной', 'water:settings:manual'),
-        Markup.callbackButton('В авто', 'water:settings:auto'),
+        Markup.callbackButton(gettext('To manual'), 'water:settings:manual'),
+        Markup.callbackButton(gettext('To auto'), 'water:settings:auto'),
         //Markup.callbackButton('🔧 Авто', 'water:settings:time'),
     ])
     .extra();
 
     initializeMenu(addKeyboardItem: any): void {
-        addKeyboardItem({ id: 'water', button: '🌧 Полив', regex: /Полив/, row: 2, isEnabled: true, order: 0 });
+        addKeyboardItem({ id: 'water', button: `🌧 ${gettext('Water')}`, regex: new RegExp(gettext('Water')), row: 2, isEnabled: true, order: 0 });
     }
 
     initialize(context: InitializeContext): void {
@@ -122,35 +122,35 @@ export class Water implements IBotModule {
             let messageParts = [];
             let state = getCurrentStateInfo();
 
-            let titleString = '🌧 Управление поливом:';
+            let titleString = `🌧 ${gettext('Water control:')}`;
             if (state.isManualMode) {
-                titleString += ' 👋 ручное';
+                titleString += ` 👋 ${gettext('manual')}`;
             } else {
-                titleString += ' 🕐 автоматическое';
+                titleString += ` 🕐 ${gettext('auto')}`;
             }
 
             if (context.greenHouse.isEmulator) {
-                titleString += ' (тестовый режим)';
+                titleString += ` (${gettext('test mode')})`;
             }
 
             messageParts.push(titleString);
 
-            let enabledStateString = `⚡️ Cостояние:`;
+            let enabledStateString = `⚡️ ${gettext('State:')}`;
             if (state.isEnabled) {
-                enabledStateString += ' ✅ включено';
+                enabledStateString += ` ✅ ${gettext('on')}`;
                 if (state.timeRemained != null) {
                     let minutes = Math.trunc(moment.duration(state.timeRemained).asMinutes());
-                    enabledStateString += ` (еще ${minutes} мин)`;
+                    enabledStateString += ` (${gettext('{min} min remained').formatUnicorn({min: minutes})})`;
                 } else {
-                    enabledStateString += ' (до выключения вручную)';
+                    enabledStateString += ` (${gettext('till turning off manually')})`;
                 }
             } else {
-                enabledStateString += ' ⏹ выключено';
+                enabledStateString += ` ⏹ ${gettext('off')}`;
             }
 
             messageParts.push(enabledStateString);
             messageParts.push('');
-            messageParts.push(`Время срабатываний в автоматическом режиме:`);
+            messageParts.push(gettext('Turned on time in automatic mode'));
 
             _(waterSettings.autoModeTimeSpans)
                 .orderBy(s => s.from)
@@ -189,14 +189,14 @@ export class Water implements IBotModule {
                 }
 
                 updateWaterState();
-                ctx.editMessageText(getMessage('✅ Полив запущен'), getDefaultKeyboard());
+                ctx.editMessageText(getMessage(`✅ ${gettext('Watering is on')}`), getDefaultKeyboard());
             } else {
                 switch (command) {
                     case "back":
                         ctx.editMessageText(getMessage(), getDefaultKeyboard());
                         break;
                     default:
-                        ctx.editMessageText(getMessage('▶️ На сколько запустить полив?'), this.manualStartKeyboard);
+                        ctx.editMessageText(getMessage(`▶️ ${gettext('How much time should the watering be turned on?')}`), this.manualStartKeyboard);
                         break;
                 }
             }
@@ -212,15 +212,15 @@ export class Water implements IBotModule {
                 case "manual":
                     setManualMode(true);
                     updateWaterState();
-                    ctx.editMessageText(getMessage('✅ Установлен ручной режим'), getDefaultKeyboard());
+                    ctx.editMessageText(getMessage(`✅ ${gettext('Manual mode is set')}`), getDefaultKeyboard());
                     break;
                 case "auto":
                     setManualMode(false);
                     updateWaterState();
-                    ctx.editMessageText(getMessage('✅ Установлен автоматический режим'), getDefaultKeyboard());
+                    ctx.editMessageText(getMessage(`✅ ${gettext('Automatic mode is set')}`), getDefaultKeyboard());
                     break;
                 default:
-                    ctx.editMessageText(getMessage('▶️ Выберите настройку'), this.settingsKeyboard);
+                    ctx.editMessageText(getMessage(`▶️ ${gettext('Choose a setting')}`), this.settingsKeyboard);
                     break;
             }
         });
@@ -229,12 +229,12 @@ export class Water implements IBotModule {
             if (!waterSettings.isManualMode) {
                 setManualMode(true);
                 updateWaterState();
-                ctx.editMessageText(getMessage('✅ Полив остановлен и переведен в ручной режим'), getDefaultKeyboard());
+                ctx.editMessageText(getMessage(`✅ ${gettext('Watering is turned off and reset into manual mode')}`), getDefaultKeyboard());
             } else {
                 waterSettings.manualInfo.lastEnableTime = null;
                 waterSettings.manualInfo.duration = null;
                 updateWaterState();
-                ctx.editMessageText(getMessage('✅ Полив остановлен'), getDefaultKeyboard());
+                ctx.editMessageText(getMessage(`✅ ${gettext('Watering is turned off')}`), getDefaultKeyboard());
             }
         });
 

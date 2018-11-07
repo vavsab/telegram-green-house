@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Эмулятор умной теплички</title>
+        <title>{{lang.title}}</title>
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -32,10 +32,10 @@
         <a id="forkMeLink" style="display: none;">
             <img id="forkMeImg" style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub">
         </a>
-        <h3>Эмулятор умной теплички</h3>
+        <h3>{{lang.title}}</h3>
         <table cellspacing="10">
             <tr>
-                <td>Температура <i class="fas fa-thermometer-three-quarters"></i>:</td>
+                <td>{{lang.temperature}} <i class="fas fa-thermometer-three-quarters"></i>:</td>
                 <td>
                     <div id="slider-temperature" style="width: 200px;">
                         <div id="handle-temperature" class="ui-slider-handle"></div>
@@ -43,7 +43,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Влажность <i class="fas fa-tint"></i>:</td>
+                <td>{{lang.humidity}} <i class="fas fa-tint"></i>:</td>
                 <td>
                     <div id="slider-humidity" style="width: 200px;">
                         <div id="handle-humidity" class="ui-slider-handle"></div>
@@ -51,21 +51,21 @@
                 </td>
             </tr>
             <tr>
-                <td>Полив <i class="fas fa-umbrella"></i>:</td>
+                <td>{{lang.watering}} <i class="fas fa-umbrella"></i>:</td>
                 <td>
-                    <div id="water-state">Загрузка...</div>
+                    <div id="water-state">{{lang.loading}}</div>
                 </td>
             </tr>
             <tr>
-                <td>Свет <i class="fas fa-lightbulb"></i>:</td>
+                <td>{{lang.lights}} <i class="fas fa-lightbulb"></i>:</td>
                 <td>
-                    <div id="lights-state">Загрузка...</div>
+                    <div id="lights-state">{{lang.loading}}</div>
                 </td>
             </tr>
         </table>
         <div style="margin: 10px;">
-            <a id="panelLink" style="display: none; text-decoration: none;"><i class="fas fa-gamepad"></i> Веб-панель</a>
-            <a id="botLink" style="display: none; text-decoration: none;"><i class="fab fa-telegram"></i> Telegram бот</a>
+            <a id="panelLink" style="display: none; text-decoration: none;"><i class="fas fa-gamepad"></i> {{lang.webPanel}}</a>
+            <a id="botLink" style="display: none; text-decoration: none;"><i class="fab fa-telegram"></i> {{lang.telegramBot}}</a>
         </div>
     </body>
 </html>

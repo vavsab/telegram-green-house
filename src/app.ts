@@ -9,10 +9,16 @@ import { IGreenHouse } from './green-house/green-house';
 import { EmulatorGreenHouse } from './green-house/emulator-green-house';
 import { RaspiGreenHouse } from './green-house/raspi-green-house';
 import { WebPanel } from './web-panel';
+import { gettextController } from './gettext';
+import * as utils from './utils';
+
+utils.init();
 
 let eventEmitter = new events();
 
 let config: AppConfiguration = require('./config.json');
+
+gettextController.setLocale(config.language);
 
 let greenHouse: IGreenHouse;
 if (config.webEmulator.isEnabled) {

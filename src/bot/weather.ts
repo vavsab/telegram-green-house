@@ -1,16 +1,17 @@
 import { IBotModule, InitializeContext } from './bot-module'
 import * as webshot from 'webshot';
+import { gettext } from '../gettext';
 
 export class Weather implements IBotModule {
     initializeMenu(addKeyboardItem: any): void {
-        addKeyboardItem({ id: 'weather', button: '🌦 Погода', regex: /Погода/, row: 0, isEnabled: true, order: 3 });
+        addKeyboardItem({ id: 'weather', button: `🌦 ${gettext('Weather')}`, regex: new RegExp(gettext('Weather')), row: 0, isEnabled: true, order: 3 });
     }
 
     initialize(context: InitializeContext): void {
         context.configureAnswerFor('weather', (ctx) => {
             let statusMessageId = null
         
-            context.botApp.telegram.sendMessage(ctx.chat.id, '⏳ Скачиваю погоду...')
+            context.botApp.telegram.sendMessage(ctx.chat.id, `⏳ ${gettext('Downloading weather...')}`)
             .then(result => result.message_id)
             .then(messageId => {
                 statusMessageId = messageId;

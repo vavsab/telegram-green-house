@@ -5,17 +5,18 @@ import * as path from 'path';
 import * as webshot from 'webshot';
 import { IBotModule, InitializeContext } from './bot-module'
 import * as resources from "../resources";
+import { gettext } from '../gettext';
 
 export class Chart implements IBotModule {
     initializeMenu(addKeyboardItem: any): void {
-        addKeyboardItem({ id: 'chart', button: '〽️ График', regex: /График/, row: 0, isEnabled: true });
+        addKeyboardItem({ id: 'chart', button: `〽️ ${gettext('Chart')}`, regex: new RegExp(gettext('Chart')), row: 0, isEnabled: true });
     }    
     
     initialize(context: InitializeContext): void {
         context.configureAnswerFor('chart', (ctx) => {
             let statusMessageId = null
             
-            context.botApp.telegram.sendMessage(ctx.chat.id, '⏳ Формирую график...')
+            context.botApp.telegram.sendMessage(ctx.chat.id, `⏳ ${gettext('Creating chart...')}`)
             .then(result => result.message_id)
             .then(messageId => {
                 statusMessageId = messageId;
@@ -62,6 +63,8 @@ export class Chart implements IBotModule {
                             } else {
                                 data = data.replace(/\/\/ LabelsStart(.|\n|\r)*LabelsEnd/, datesString);
                                 data = data.replace(/\/\/ DataStart(.|\n|\r)*DataEnd/, dataString);
+                                data = data.replace(/\/\/label\/\//, gettext('Temperature (°C on day/hour:minute)'));
+                                
                                 webshot(data, fileName, {siteType:'html', renderDelay: 500, shotSize: { width: 1050, height: 550 }}, err => {
                                     if (err) {
                                         reject(err);

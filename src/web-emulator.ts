@@ -4,6 +4,7 @@ import { IGreenHouse } from './green-house/green-house';
 import { EmulatorGreenHouse } from './green-house/emulator-green-house';
 import * as socketIO from 'socket.io';
 import * as resources from './resources';
+import { gettext } from './gettext';
 
 export class WebEmulator {
     public start(config: AppConfiguration, greenHouse: IGreenHouse): void {
@@ -15,6 +16,24 @@ export class WebEmulator {
         const apiRouter = express.Router();;
         const http = require('http').createServer(app);
         const io = socketIO.listen(http);
+
+        app.set('view engine', 'hbs');
+
+        
+        app.get('/', (_request, response) => {
+            response.render(resources.getFilePath('web-emulator', 'index.hbs'), {
+                lang: {
+                    title: gettext('Greenhouse emulator'),
+                    temperature: gettext('Temperature'),
+                    humidity: gettext('Humidity'),
+                    watering: gettext('Watering'),
+                    lights: gettext('Lights'),
+                    loading: gettext('Loading...'),
+                    webPanel: gettext('Web panel'),
+                    telegramBot: gettext('Telegram bot')
+                }
+            });
+        });
 
         app.use(express.static(resources.getFilePath('web-emulator')));
         app.use('/api', apiRouter);
@@ -49,7 +68,7 @@ export class WebEmulator {
             allClients.forEach(s => s.emit('lights-changed', isSwitchedOn));
         })
 
-        apiRouter.get('/config', (req, res) => { 
+        apiRouter.get('/config', (_req, res) => { 
             res.json({ 
                 link: config.webEmulator.link,
                 linkToRepository: config.bot.linkToRepository,
@@ -58,7 +77,7 @@ export class WebEmulator {
             });
         });
 
-        apiRouter.get('/data', (req, res) => {
+        apiRouter.get('/data', (_req, res) => {
             res.json({ 
                 temperature: emulatorGreenHouse.sensorsData.temperature,
                 humidity: emulatorGreenHouse.sensorsData.humidity,

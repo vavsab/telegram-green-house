@@ -10,6 +10,7 @@ import { Photo } from './bot/photo';
 import { AppConfiguration } from './app-configuration';
 import { IGreenHouse } from './green-house/green-house';
 import * as Telegraf from 'telegraf';
+import { gettext } from './gettext';
 
 export class Bot {
     public start(eventEmitter, config: AppConfiguration, greenHouse: IGreenHouse): void {
@@ -66,10 +67,9 @@ export class Bot {
                 return next();
             }
     
-            app.telegram.sendMessage(adminChatId, `⚠️ Отказано в доступе пользователю ${JSON.stringify(ctx.from)}, chat: ${JSON.stringify(ctx.chat)}`);
+            app.telegram.sendMessage(adminChatId, `⚠️ ${gettext('Access denied for user {user}, chat: {chat}').formatUnicorn({user: JSON.stringify(ctx.from), chat: JSON.stringify(ctx.chat)})}`);
     
-            return ctx.reply('⚠️ У вас нет доступа для использования этого бота.\n'
-                            + 'При необходимости обратитесь к @ivan_sabelnikov.');
+            return ctx.reply(`⚠️ ${gettext('You have no access to this bot.\n If you have any questions, please write @ivan_sabelnikov')}`);
         });
     
         let initializeContext: InitializeContext = {
@@ -99,7 +99,7 @@ export class Bot {
             .extra()
     
         app.on('text', (ctx) => {
-            return ctx.reply('Выберите команду', keyboard)
+            return ctx.reply(gettext('Choose a command'), keyboard)
         })
     
         app.catch((err) => {

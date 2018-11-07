@@ -2,11 +2,11 @@ var socket = io('/');
 
 $(function () {
     function onWaterChanged(isOn) {
-        $('#water-state').text(isOn ? 'Включено' : 'Выключено');
+        $('#water-state').text(isOn ? 'On' : 'Off');
     }
 
     function onLightsChanged(isOn) {
-        $('#lights-state').text(isOn ? 'Включено' : 'Выключено');
+        $('#lights-state').text(isOn ? 'On' : 'Off');
     }
 
     socket.on('water-changed', onWaterChanged);

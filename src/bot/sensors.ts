@@ -1,9 +1,10 @@
 import { IBotModule, InitializeContext } from './bot-module'
 import { SensorsData } from '../green-house/green-house';
+import { gettext } from '../gettext';
 
 export class Sensors implements IBotModule {
     initializeMenu(addKeyboardItem: any): void {
-        addKeyboardItem({ id: 'sensors', button: '☀️ Датчики', regex: /Датчики/, row: 0, isEnabled: true, order: 1 });
+        addKeyboardItem({ id: 'sensors', button: `☀️ ${gettext('Sensors')}`, regex: new RegExp(gettext('Sensors')), row: 0, isEnabled: true, order: 1 });
     };
 
     initialize(context: InitializeContext): void {
@@ -12,12 +13,12 @@ export class Sensors implements IBotModule {
         let latestResult: SensorsData = null;
 
         let lastWarningMessageDateTime = new Date(0);
-        const testModeMessageAppendix = ' (тестовый режим)';
+        const testModeMessageAppendix = ` (${gettext('test mode')})`;
 
         context.configureAnswerFor('sensors', (ctx) => {
             let message
             if (latestResult == null) {
-                message = '⚠️ Данных еще нет. Видимо, сервер только что запустился. Попробуйте немножко позже.'
+                message = `⚠️ ${gettext('Data is not available. Seems that server has just started. Please try a bit later.')}`
             } else {
                 message = `🌡 ${latestResult.temperature.toFixed(1)} °C, 💧 ${latestResult.humidity.toFixed(1)}%`
                 if (context.greenHouse.isEmulator) {

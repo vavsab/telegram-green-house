@@ -26,16 +26,5 @@ app.controller('mainController', ['$scope', '$http', function ($scope, $http) {
     .then(function (result) {
         self.config = result.data;
         $scope.$applyAsync();
-        // if (data.linkToRepository) {
-        //     $('#forkMeLink').attr('href', data.linkToRepository).css('display', 'block');
-        // }
-
-        // if (data.linkToPanel) {
-        //     $('#panelLink').attr('href', data.linkToPanel).css('display', 'block');
-        // }
-
-        // if (data.linkToBot) {
-        //     $('#botLink').attr('href', data.linkToBot).css('display', 'block');
-        // }
     });
 }]);

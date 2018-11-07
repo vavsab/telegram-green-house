@@ -1,4 +1,5 @@
 {
+    "language": "ru",
     "webPanel": {
         "isEnabled": true,
         "port": 8080,
@@ -13,6 +14,7 @@
     "bot": {
         "token": "411697622:20FXSc7ITnAAvcFck2Xun5MFr7q2-JNcvij",
         "linkToRepository": "https://github.com/vavsab/telegram-green-house",
+        "link": "https://t.me/demo_green_house_bot",
         "adminChatId": 282721686,
         "allowedChatIds": [282721686],
         "minTemperature": 17,

@@ -3,6 +3,7 @@ import { IBotModule, InitializeContext } from './bot-module'
 import { WindowsManager } from '../green-house/windows/windows-manager';
 import { SendCommmandResponse } from '../green-house/windows/send-command-response';
 import { WindowState } from '../green-house/windows/window-state';
+import { gettext } from '../gettext';
 
 export class Windows implements IBotModule {
     private readonly _buttonsPerLine: number = 3;
@@ -10,7 +11,7 @@ export class Windows implements IBotModule {
     private _windowsManager: WindowsManager;
 
     public initializeMenu(addKeyboardItem: any): void {
-        addKeyboardItem({ id: 'windows', button: '♻️ Окна', regex: /Окна/, row: 2, isEnabled: true, order: 0 });
+        addKeyboardItem({ id: 'windows', button: `♻️ ${gettext('Windows')}`, regex: new RegExp(gettext('Windows')), row: 2, isEnabled: true, order: 0 });
     }    
     
     public initialize(context: InitializeContext): void {
@@ -25,12 +26,12 @@ export class Windows implements IBotModule {
                 ? this._windowsManager.addresses 
                 : [windowAddress];
 
-            await ctx.editMessageText('⏳ Обновляю...');
+            await ctx.editMessageText(`⏳ ${gettext('Updating...')}`);
             await this.replyWithStatus(ctx.editMessageText, addresses);
         });
 
         context.configureAction(/window\:select/, async ctx => {
-            await ctx.editMessageText('⏳ Обновляю список...');
+            await ctx.editMessageText(`⏳ ${gettext('Updating list...')}`);
             await this.replyWithStatus(ctx.editMessageText, this._windowsManager.addresses, true);
         });
 
@@ -44,13 +45,13 @@ export class Windows implements IBotModule {
 
             switch (command) {
                 case 'open':
-                    waitingMessage = '⏳ Открываю...';
+                    waitingMessage = `⏳ ${gettext('Opening...')}`;
                     break;
                 case 'close':
-                    waitingMessage = '⏳ Закрываю...';
+                    waitingMessage = `⏳ ${gettext('Closing...')}`;
                     break;
                 case 'reset':
-                    waitingMessage = '⏳ Сбрасываю...';
+                    waitingMessage = `⏳ ${gettext('Resetting...')}`;
                     break;
                 default:
                     console.log(`Windows > Not supported command '${command}'`);
@@ -88,33 +89,33 @@ export class Windows implements IBotModule {
 
             switch (response.state) {
                 case WindowState.CommunicationError:
-                    stateString = '⚠️ Ошибка передачи данных';
+                    stateString = `⚠️ ${gettext('Data transmit failure')}`;
                     break;
                 case WindowState.NotResponding:
-                    stateString = '️️⚠️ Не отвечает';
+                    stateString = `️️⚠️ ${gettext('Not responding')}`;
                     break;
                 case WindowState.Error:
-                    stateString = `️⚠️ Ошибка (${response.errorText})`;
+                    stateString = `️⚠️ ${gettext('Failure')} (${response.errorText})`;
                     break;
                 case WindowState.Closed:
-                    stateString = '️️☁️ Закрыто';
+                    stateString = `️️☁️ ${gettext('Closed')}`;
                     break;
                 case WindowState.Closing:
-                    stateString = '️️⬇️ Закрывается';
+                    stateString = `⬇️ ${gettext('Closing')}`;
                     break;
                 case WindowState.Open:
-                    stateString = '️️🔅 Открыто';
+                    stateString = `️️🔅 ${gettext('Open', 'State')}`;
                     break;
                 case WindowState.Opening:
-                    stateString = '️️⬆️ Открывается';
+                    stateString = `⬆️ ${gettext('Opening')}`;
                     break;
                 default:
-                    stateString = `️️⚠️ Неизвестное состояние '${response.state}'`;
+                    stateString = `️⚠️ ${gettext('Unknown state')} '${response.state}'`;
                     break;
             }
 
             states.push(response.state);
-            result += `Окно ${address}: ${stateString}\n`;
+            result += `${gettext('Window')} ${address}: ${stateString}\n`;
         }
 
         let buttonInfos: ButtonInfo[] = [];
@@ -122,7 +123,7 @@ export class Windows implements IBotModule {
         if (selectWindow) {
             buttonInfos.push({ title: '⬅️', action: this.createAddressCommand('refresh', this._windowsManager.addresses) })
             for (let i = 0; i < addresses.length; i++) { 
-                buttonInfos.push({ title: `Окно ${addresses[i]}`, action: this.createAddressCommand('refresh', [addresses[i]]) });    
+                buttonInfos.push({ title: `${gettext('Window')} ${addresses[i]}`, action: this.createAddressCommand('refresh', [addresses[i]]) });    
             }
         } else {
             if (this._windowsManager.addresses.length > 1 && addresses.length == 1) {
@@ -132,18 +133,18 @@ export class Windows implements IBotModule {
             buttonInfos.push({ title: '🔄', action: this.createAddressCommand('refresh', addresses) });
                
             if (states.findIndex(s => s == WindowState.Open) != -1)
-                buttonInfos.push({ title: 'Закрыть', action: this.createAddressCommand('close', addresses) })
+                buttonInfos.push({ title: gettext('Close'), action: this.createAddressCommand('close', addresses) })
     
             if (states.findIndex(s => s == WindowState.Closed) != -1)
-                buttonInfos.push({ title: 'Открыть', action: this.createAddressCommand('open', addresses) })
+                buttonInfos.push({ title: gettext('Open', 'Action'), action: this.createAddressCommand('open', addresses) })
     
             if (states.findIndex(s => s == WindowState.CommunicationError 
                     || s == WindowState.Error 
                     || s == WindowState.NotResponding) != -1)
-                buttonInfos.push({ title: 'Сброс', action: this.createAddressCommand('reset', addresses) })
+                buttonInfos.push({ title: gettext('Reset'), action: this.createAddressCommand('reset', addresses) })
     
             if (addresses.length > 1) {
-                buttonInfos.push({ title: 'Отдельно', action: this.createAddressCommand('select', this._windowsManager.addresses) })
+                buttonInfos.push({ title: gettext('Separately'), action: this.createAddressCommand('select', this._windowsManager.addresses) })
             }
         }
 

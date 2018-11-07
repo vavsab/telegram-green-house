@@ -22,7 +22,8 @@ const copyMapping = [
     { from: './package.json', to: './dist/' },
     { from: './src/resources/**/*', to: './dist/resources/' },
     { from: './ecosystem.config.js', to: './dist/', },
-    { from: './src/config.default.json', to: './dist/' }
+    { from: './src/config.default.json', to: './dist/' },
+    { from: './src/i18n/**/*', to: './dist/i18n/' }
 ];
 
 gulp.task('default', () => {

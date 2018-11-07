@@ -1,3 +1,3 @@
 gulp
 Start-Process -NoNewWindow gulp watch
-nodemon ./dist/app.js
+nodemon --delay 3.0 ./dist/app.js
