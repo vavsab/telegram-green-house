@@ -1,5 +1,5 @@
 # telegram-green-house
-[Russian version](Readme.md)
+[Russian version](README.md)
 
 Open-source telegram bot developed for green house.
 
