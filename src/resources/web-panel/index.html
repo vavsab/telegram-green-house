@@ -17,7 +17,7 @@
     <img style="position: absolute; top: 0; right: 0; border: 0; z-index: 10000;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub">
   </a>
 
-  <div class="navbar navbar-default navbar-fixed-top">
+   <div class="navbar navbar-default navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
           <a href="../" class="navbar-brand">{{$ctrl.config.title}}</a>
@@ -30,15 +30,26 @@
       </div>
     </div>
 
-  <div class="container" style="font-size: 2em;" ng-cloak>
-    {{$ctrl.config.lang.temperature}} <span class="glyphicon glyphicon-signal"></span>:  
-    <span class="label label-success">{{$ctrl.sensors.temperature | number:2}} °C</span>
-    <br />
-    {{$ctrl.config.lang.humidity}} <span class="glyphicon glyphicon-tint"></span>: 
-    <span class="label label-success">{{$ctrl.sensors.humidity | number:2}} %</span>
-    <br />
-    {{$ctrl.config.lang.lastUpdate}} <span class="glyphicon glyphicon-refresh"></span>: 
-    <span class="label label-default">{{$ctrl.lastUpdate | date:'mediumTime'}}</span>
+  <div class="body-container">
+    <div class="gauge-container_temperature" ng-show="$gauge.colors" ng-controller="gaugeController as $gauge" ng-init="$gauge.type = 'temperature'">
+      <svg viewBox="0 0 100 400" class="gauge-svg" preserveAspectRatio="none">
+        <rect ng-show="$gauge.isVisible(color)" ng-attr-x="0" ng-attr-y="{{400 * $index / $gauge.colors.length}}" 
+          ng-attr-width="100" ng-attr-height="{{(400 / $gauge.colors.length) * 0.8 }}" fill="{{color}}" ng-repeat="color in $gauge.colors"></rect>
+      </svg>
+    </div>
+    <div class="gauge-container_humidity" ng-show="$gauge.colors" ng-controller="gaugeController as $gauge" ng-init="$gauge.type = 'humidity'">
+      <svg viewBox="0 0 100 400" class="gauge-svg" preserveAspectRatio="none">
+          <rect ng-show="$gauge.isVisible(color)"  ng-attr-x="0" ng-attr-y="{{400 * $index / $gauge.colors.length}}" 
+            ng-attr-width="100" ng-attr-height="{{(400 / $gauge.colors.length) * 0.8 }}" fill="{{color}}" ng-repeat="color in $gauge.colors"></rect>
+      </svg>
+    </div>
+    <div class="value-container_temperature">
+      {{$ctrl.sensors.temperature | number:1}} °C
+    </div>
+    <div class="value-container_humidity">
+      {{$ctrl.sensors.humidity | number:1}} %
+    </div>
+    <div class="status-container" ng-class="{'status-container__online': $ctrl.isOnline}">{{$ctrl.isOnline ? 'ONLINE' : 'OFFLINE'}}</div>
   </div>
 </body>
 </html>

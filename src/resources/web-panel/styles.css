@@ -1,8 +1,74 @@
-/* You can add global styles to this file, and also import other style files */
-body {
-    padding-top: 55px;
+.navbar-header, .navbar {
+    background-color: #252830;
+}
+
+.navbar-brand {
+    color: #fff !important;
 }
 
 .navbar-toggle {
     display: none;
+}
+
+.body-container {
+    padding: 50px 10px 10px 10px;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 10% 10%;
+    grid-template-areas: 
+        'temperature-gauge humidity-gauge'
+        'temperature-value humidity-value'
+        'status status';
+    flex-direction: column;
+    background-color: #252830;
+}
+
+.gauge-container_temperature {
+    grid-area: temperature-gauge;
+    padding: 5px;
+}
+
+.gauge-svg {
+    display: block;    
+    max-height: 100%;
+}
+
+.gauge-container_humidity {
+    grid-area: humidity-gauge;
+    padding: 5px;
+}
+
+.value-container_temperature {
+    color: #fff;
+    text-align: center;
+    font-size: 7vh;
+    grid-area: temperature-value;
+    background-color: #434857;
+    border: 1px solid #434857;
+    border-radius: 0.25rem;
+}
+
+.value-container_humidity {
+    color: #fff;
+    text-align: center;
+    font-size: 7vh;
+    grid-area: humidity-value;
+    background-color: #434857;
+    border: 1px solid #434857;
+    border-radius: 0.25rem;
+}
+
+.status-container {
+    color: #fff;
+    grid-area: status;
+    font-size: 7vh;
+    text-align: center;
+    background-color: #cc0000;
+}
+
+.status-container__online {
+    background-color: darkgreen;
 }
