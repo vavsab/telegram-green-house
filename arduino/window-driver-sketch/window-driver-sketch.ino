@@ -26,7 +26,7 @@ enum State {
 #define LimitSwitchEnabled          LOW
 #define LimitSwitchDisabled         HIGH
 #define LimitSwitchReleaseTimeout   1000 // Time in ms that is needed to release opposite limit switch. Fof example, to release down switch when opening a window
-#define LimitSwitchOpenCloseTimeout 7000 // Time in ms that is needed to open/close a window
+#define LimitSwitchOpenCloseTimeout 9000 // Time in ms that is needed to open/close a window
 #define LimitSwitchBounceTimeout 5000 // Time in ms for allowing contact bouncing 
 
 #define RelayUpPin      7
@@ -48,11 +48,10 @@ byte relayDown = RelayDisable;
 byte errorLED = ErrorLEDDisable;
 
 String lastError = "";
-int lastErrorCode = 0;
 String lastCommand = "";
 char messageBuffer[MessageBufferSize];
 int messageBufferIndex = 0;
-int messageAddress = 5;
+int messageAddress = 3;
 float current = 0;
 ACS712 currentSensor(ACS712_30A, A0);
 unsigned long lastStateChangeTime;
@@ -138,7 +137,7 @@ void updateState() {
   unsigned long msOnCurrentState = millis() - lastStateChangeTime;
 
   if (state != StateError && current > MaxAllowedCurrent && msOnCurrentState > VoltageSurgeTimeout) {
-    setError("Too high current on state " + getCurrentState(), 10);
+    setError("HIGH_CURRENT"); // Too high current on state X
   } else if (lastCommand == CommandReset) {
     state = StateStart;
   } else {
@@ -149,7 +148,7 @@ void updateState() {
         relayDown = RelayDisable;
         
         if (limitSwitchUp == LimitSwitchEnabled && limitSwitchDown == LimitSwitchEnabled) {
-          setError("Start failure. Up and down limits have been enabled.", 1);
+          setError("UP_DOWN_ENABLED"); // Start failure. Up and down limits have been enabled.
         } else if (limitSwitchUp == LimitSwitchEnabled && limitSwitchDown == LimitSwitchDisabled) {
           state = StateOpen;
         } else if (limitSwitchUp == LimitSwitchDisabled && limitSwitchDown == LimitSwitchEnabled) {
@@ -166,9 +165,9 @@ void updateState() {
         relayDown = RelayDisable;
         
         if (limitSwitchUp == LimitSwitchEnabled) {
-          setError("Closed failure. Up limit has been enabled.", 2);
+          setError("UP_ENABLED"); // Closed failure. Up limit has been enabled.
         } else if (limitSwitchDown == LimitSwitchDisabled && msOnCurrentState > LimitSwitchBounceTimeout) {
-          setError("Closed failure. Down limit has been disabled.", 3);
+          setError("DOWN_DISABLED"); // Closed failure. Down limit has been disabled.
         } else if (lastCommand == CommandOpen) {
           state = StateOpening;
         }
@@ -181,9 +180,9 @@ void updateState() {
         relayDown = RelayEnable;
 
         if (limitSwitchUp == LimitSwitchEnabled && msOnCurrentState > LimitSwitchReleaseTimeout) {
-          setError("Closing timeout. Up limit is still enabled", 4);
+          setError("TIMEOUT_UP_STILL_ENABLED"); // Closing timeout. Up limit is still enabled
         } else if (limitSwitchDown == LimitSwitchDisabled && msOnCurrentState > LimitSwitchOpenCloseTimeout) {
-          setError("Closing timeout. Down limit has not been enabled", 5);  
+          setError("TIMEOUT_DOWN_NOT_ENABLED"); // Closing timeout. Down limit has not been enabled
         } else if (limitSwitchDown == LimitSwitchEnabled) {
           state = StateClosed;
         } else if (lastCommand == CommandOpen) {
@@ -198,9 +197,9 @@ void updateState() {
         relayDown = RelayDisable;
         
         if (limitSwitchDown == LimitSwitchEnabled) {
-          setError("Open failure. Down limit has been enabled.", 6);
+          setError("DOWN_ENABLED"); // Open failure. Down limit has been enabled
         } else if (limitSwitchUp == LimitSwitchDisabled && msOnCurrentState > LimitSwitchBounceTimeout) {
-          setError("Open failure. Up limit has been disabled.", 7);
+          setError("UP_DISABLED"); // Open failure. Up limit has been disabled.
         } else if (lastCommand == CommandClose) {
           state = StateClosing;
         }
@@ -213,9 +212,9 @@ void updateState() {
         relayDown = RelayDisable;
 
         if (limitSwitchDown == LimitSwitchEnabled && msOnCurrentState > LimitSwitchReleaseTimeout) {
-          setError("Opening timeout. Down limit is still enabled", 8);
+          setError("TIMEOUT_DOWN_STILL_ENABLED"); // Opening timeout. Down limit is still enabled
         } else if (limitSwitchUp == LimitSwitchDisabled && msOnCurrentState > LimitSwitchOpenCloseTimeout) {
-          setError("Opening timeout. Up limit has not been enabled", 9);  
+          setError("TIMEOUT_UP_NOT_ENABLED"); // Opening timeout. Up limit has not been enabled
         } else if (limitSwitchUp == LimitSwitchEnabled) {
           state = StateOpen;
         } else if (lastCommand == CommandClose) {
@@ -248,10 +247,9 @@ void setOutPins() {
   digitalWrite(UARTPin, RS485Receive);
 }
 
-void setError(String errorText, int code) {
+void setError(String errorDescr) {
+  lastError = getCurrentState() + "#" + errorDescr;
   state = StateError;
-  lastError = errorText; 
-  lastErrorCode = code;
 }
 
 String getCurrentState() {
@@ -267,7 +265,7 @@ String getCurrentState() {
     case StateOpening:
       return "opening";
     case StateError:
-      return "error#" + String(lastErrorCode) + "#" + lastError;
+      return "error#" + lastError;
     default:
       return "";
   }

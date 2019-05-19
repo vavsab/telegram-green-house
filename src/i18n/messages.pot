@@ -54,16 +54,32 @@ msgstr ""
 msgid "Choose video duration"
 msgstr ""
 
-#: src/bot/windows.ts:136
+#: src/bot/windows.ts:133
 msgid "Close"
 msgstr ""
 
-#: src/bot/windows.ts:101
+#: src/bot/windows.ts:190
 msgid "Closed"
 msgstr ""
 
-#: src/bot/windows.ts:104
+#: src/bot/windows.ts:211
+msgid "Closed failure. Down limit has been disabled"
+msgstr ""
+
+#: src/bot/windows.ts:209
+msgid "Closed failure. Up limit has been enabled"
+msgstr ""
+
+#: src/bot/windows.ts:192
 msgid "Closing"
+msgstr ""
+
+#: src/bot/windows.ts:215
+msgid "Closing timeout. Down limit has not been enabled"
+msgstr ""
+
+#: src/bot/windows.ts:213
+msgid "Closing timeout. Up limit is still enabled"
 msgstr ""
 
 #: src/bot/windows.ts:51
@@ -78,7 +94,7 @@ msgstr ""
 msgid "Data is not available. Seems that server has just started. Please try a bit later."
 msgstr ""
 
-#: src/bot/windows.ts:92
+#: src/bot/windows.ts:184
 msgid "Data transmit failure"
 msgstr ""
 
@@ -100,7 +116,7 @@ msgstr ""
 
 #: src/bot/photo.ts:19
 #: src/bot/video.ts:33
-#: src/bot/windows.ts:98
+#: src/bot/windows.ts:188
 msgid "Failure"
 msgstr ""
 
@@ -145,7 +161,7 @@ msgstr ""
 msgid "Manual mode is set"
 msgstr ""
 
-#: src/bot/windows.ts:95
+#: src/bot/windows.ts:186
 msgid "Not responding"
 msgstr ""
 
@@ -161,8 +177,24 @@ msgstr ""
 msgid "on"
 msgstr ""
 
-#: src/bot/windows.ts:110
+#: src/bot/windows.ts:217
+msgid "Open failure. Down limit has been enabled"
+msgstr ""
+
+#: src/bot/windows.ts:219
+msgid "Open failure. Up limit has been disabled"
+msgstr ""
+
+#: src/bot/windows.ts:196
 msgid "Opening"
+msgstr ""
+
+#: src/bot/windows.ts:221
+msgid "Opening timeout. Down limit is still enabled"
+msgstr ""
+
+#: src/bot/windows.ts:223
+msgid "Opening timeout. Up limit has not been enabled"
 msgstr ""
 
 #: src/bot/windows.ts:48
@@ -181,7 +213,7 @@ msgstr ""
 msgid "Please wait while video with duration of *{duration} sec* is recording..."
 msgstr ""
 
-#: src/bot/windows.ts:144
+#: src/bot/windows.ts:141
 msgid "Reset"
 msgstr ""
 
@@ -197,7 +229,7 @@ msgstr ""
 msgid "Sensors"
 msgstr ""
 
-#: src/bot/windows.ts:147
+#: src/bot/windows.ts:144
 msgid "Separately"
 msgstr ""
 
@@ -205,6 +237,10 @@ msgstr ""
 #: src/bot/water.ts:12
 #: src/bot/water.ts:18
 msgid "Settings"
+msgstr ""
+
+#: src/bot/windows.ts:207
+msgid "Start failure. Up and down limits have been enabled"
 msgstr ""
 
 #: src/bot/water.ts:138
@@ -241,6 +277,10 @@ msgstr ""
 msgid "To manual"
 msgstr ""
 
+#: src/bot/windows.ts:205
+msgid "Too high current in state {state}"
+msgstr ""
+
 #: src/bot/water.ts:10
 #: src/bot/water.ts:17
 msgid "Turn off"
@@ -254,7 +294,7 @@ msgstr ""
 msgid "Turned on time in automatic mode"
 msgstr ""
 
-#: src/bot/windows.ts:113
+#: src/bot/windows.ts:198
 msgid "Unknown state"
 msgstr ""
 
@@ -306,8 +346,8 @@ msgstr ""
 msgid "Website"
 msgstr ""
 
-#: src/bot/windows.ts:118
-#: src/bot/windows.ts:126
+#: src/bot/windows.ts:115
+#: src/bot/windows.ts:123
 msgid "Window"
 msgstr ""
 
@@ -321,12 +361,12 @@ msgid ""
 " If you have any questions, please write @ivan_sabelnikov"
 msgstr ""
 
-#: src/bot/windows.ts:139
+#: src/bot/windows.ts:136
 msgctxt "Action"
 msgid "Open"
 msgstr ""
 
-#: src/bot/windows.ts:107
+#: src/bot/windows.ts:194
 msgctxt "State"
 msgid "Open"
 msgstr ""

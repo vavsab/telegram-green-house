@@ -61,17 +61,35 @@ msgstr "Выберите настройку"
 msgid "Choose video duration"
 msgstr "Выберите длительность видео"
 
-#: src/bot/windows.ts:136
+#: src/bot/windows.ts:133
 msgid "Close"
 msgstr "Закрыть"
 
-#: src/bot/windows.ts:101
+#: src/bot/windows.ts:190
 msgid "Closed"
 msgstr "Закрыто"
 
-#: src/bot/windows.ts:104
+#: src/bot/windows.ts:211
+msgid "Closed failure. Down limit has been disabled"
+msgstr "Ошибка закрытого окна. Датчик закрытия отошел"
+
+#: src/bot/windows.ts:209
+msgid "Closed failure. Up limit has been enabled"
+msgstr "Ошибка закрытого окна. Сработал датчик открытия"
+
+#: src/bot/windows.ts:192
 msgid "Closing"
 msgstr "Закрывается"
+
+#: src/bot/windows.ts:215
+msgid "Closing timeout. Down limit has not been enabled"
+msgstr "Таймаут закрытия. Датчик закрытия не сработал"
+
+#: src/bot/windows.ts:213
+msgid "Closing timeout. Up limit is still enabled"
+msgstr ""
+"Таймаут закрытия. Датчик открытия слишком долго оставался в сработанном "
+"состоянии"
 
 #: src/bot/windows.ts:51
 msgid "Closing..."
@@ -89,7 +107,7 @@ msgstr ""
 "Данные недоступны. Кажется, что сервер только запустился. Пожалуйста, "
 "попробуйте немного позже."
 
-#: src/bot/windows.ts:92
+#: src/bot/windows.ts:184
 msgid "Data transmit failure"
 msgstr "Ошибка передачи данных"
 
@@ -109,7 +127,7 @@ msgstr "Скачиваю погоду..."
 msgid "Emulator"
 msgstr "Эмулятор"
 
-#: src/bot/photo.ts:19 src/bot/video.ts:33 src/bot/windows.ts:98
+#: src/bot/photo.ts:19 src/bot/video.ts:33 src/bot/windows.ts:188
 msgid "Failure"
 msgstr "Ошибка"
 
@@ -153,7 +171,7 @@ msgstr "ручное"
 msgid "Manual mode is set"
 msgstr "Установлено ручное управление"
 
-#: src/bot/windows.ts:95
+#: src/bot/windows.ts:186
 msgid "Not responding"
 msgstr "Не отвечает"
 
@@ -169,9 +187,27 @@ msgstr "выключено"
 msgid "on"
 msgstr "включено"
 
-#: src/bot/windows.ts:110
+#: src/bot/windows.ts:217
+msgid "Open failure. Down limit has been enabled"
+msgstr "Ошибка открытого окна. Сработал датчик закрытия"
+
+#: src/bot/windows.ts:219
+msgid "Open failure. Up limit has been disabled"
+msgstr "Ошибка открытого окна. Датчик открытия отошел"
+
+#: src/bot/windows.ts:196
 msgid "Opening"
 msgstr "Открывается"
+
+#: src/bot/windows.ts:221
+msgid "Opening timeout. Down limit is still enabled"
+msgstr ""
+"Таймаут открытия. Датчик закрытия слишком долго оставался в сработанном "
+"состоянии"
+
+#: src/bot/windows.ts:223
+msgid "Opening timeout. Up limit has not been enabled"
+msgstr "Таймаут открытия. Датчик открытия не сработал"
 
 #: src/bot/windows.ts:48
 msgid "Opening..."
@@ -188,10 +224,9 @@ msgstr "Фото снимается..."
 #: src/bot/video.ts:26
 msgid ""
 "Please wait while video with duration of *{duration} sec* is recording..."
-msgstr ""
-"Пожалуйста, подождите, пока видео длиной *{duration} сек* запишется..."
+msgstr "Пожалуйста, подождите, пока видео длиной *{duration} сек* запишется..."
 
-#: src/bot/windows.ts:144
+#: src/bot/windows.ts:141
 msgid "Reset"
 msgstr "Сброс"
 
@@ -207,13 +242,18 @@ msgstr "Сохранять данные датчиков: каждые *{min} м
 msgid "Sensors"
 msgstr "Датчики"
 
-#: src/bot/windows.ts:147
+#: src/bot/windows.ts:144
 msgid "Separately"
 msgstr "Отдельно"
 
 #: src/bot/settings.ts:10 src/bot/water.ts:12 src/bot/water.ts:18
 msgid "Settings"
 msgstr "Настройки"
+
+#: src/bot/windows.ts:207
+msgid "Start failure. Up and down limits have been enabled"
+msgstr ""
+"Ошибка инициализации. Датчик открытия и закрытия сработали одновременно"
 
 #: src/bot/water.ts:138
 msgid "State:"
@@ -247,6 +287,10 @@ msgstr "В авто"
 msgid "To manual"
 msgstr "В ручное"
 
+#: src/bot/windows.ts:205
+msgid "Too high current in state {state}"
+msgstr "Слишком большой ток в двигателе в состоянии {state}"
+
 #: src/bot/water.ts:10 src/bot/water.ts:17
 msgid "Turn off"
 msgstr "Выключить"
@@ -259,7 +303,7 @@ msgstr "Включить"
 msgid "Turned on time in automatic mode"
 msgstr "Включения для автоматического режима"
 
-#: src/bot/windows.ts:113
+#: src/bot/windows.ts:198
 msgid "Unknown state"
 msgstr "Неизвестное состояние"
 
@@ -281,7 +325,7 @@ msgstr "Полив"
 
 #: src/bot/water.ts:125
 msgid "Water control:"
-msgstr "Контроль полива"
+msgstr "Контроль полива:"
 
 #: src/web-emulator.ts:29
 msgid "Watering"
@@ -311,7 +355,7 @@ msgstr "Веб-панель"
 msgid "Website"
 msgstr "Вебсайт"
 
-#: src/bot/windows.ts:118 src/bot/windows.ts:126
+#: src/bot/windows.ts:115 src/bot/windows.ts:123
 msgid "Window"
 msgstr "Окно"
 
@@ -325,14 +369,15 @@ msgid ""
 " If you have any questions, please write @ivan_sabelnikov"
 msgstr ""
 "У Вас нет доступа для использования этого бота.\n"
-"В случае необходимости обратитесь к @ivan_sabelnikov"
+"\vНаш Instagram (https://www.instagram.com/microgreen.poltava/)\n"
+"В случае необходимости обратитесь к администратору (@ivan_sabelnikov)"
 
-#: src/bot/windows.ts:139
+#: src/bot/windows.ts:136
 msgctxt "Action"
 msgid "Open"
 msgstr "Открыть"
 
-#: src/bot/windows.ts:107
+#: src/bot/windows.ts:194
 msgctxt "State"
 msgid "Open"
 msgstr "Открыто"

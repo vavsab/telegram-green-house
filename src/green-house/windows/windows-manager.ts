@@ -20,29 +20,37 @@ export class WindowsManager {
 
         let responseParts: string[] = response.split('#');
         let stateString: string = responseParts[0];
+        let state: WindowState = this.stringToState(stateString);
 
-        switch (stateString) {
-            case "open":
-                return SendCommmandResponse.create(WindowState.Open);
-            case "opening":
-                return SendCommmandResponse.create(WindowState.Opening);
-            case "closed":
-                return SendCommmandResponse.create(WindowState.Closed);
-            case "closing":
-                return SendCommmandResponse.create(WindowState.Closing);
-            case "error":
+        switch (state) {
+            case WindowState.Error:
                 if (responseParts.length != 3)
                     return SendCommmandResponse.create(WindowState.CommunicationError);
 
-                let errorCode: number = parseInt(responseParts[1]);
-                let errorText: string = responseParts[2];
+                let errorState: WindowState = this.stringToState(responseParts[1]);
+                let errorCode: string = responseParts[2];
 
-                if (isNaN(errorCode))
-                    return SendCommmandResponse.create(WindowState.CommunicationError);
-
-                return SendCommmandResponse.createDetailed(WindowState.Error, errorCode, errorText);
+                return SendCommmandResponse.createDetailed(WindowState.Error, errorState, errorCode);
+            default:
+                return SendCommmandResponse.create(state);
+            
         }
+    }
 
-        return SendCommmandResponse.create(WindowState.CommunicationError);
+    private stringToState(stateString: string): WindowState {
+        switch (stateString) {
+            case "open":
+                return WindowState.Open;
+            case "opening":
+                return WindowState.Opening;
+            case "closed":
+                return WindowState.Closed;
+            case "closing":
+                return WindowState.Closing;
+            case "error":
+                return WindowState.Error;
+            default:
+                return WindowState.CommunicationError;
+        }
     }
 }

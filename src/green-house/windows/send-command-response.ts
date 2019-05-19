@@ -3,15 +3,15 @@ import { WindowState } from "./window-state";
 export class SendCommmandResponse {
     public state: WindowState;
 
-    public errorCode: number;
+    public errorState: WindowState;
 
-    public errorText: string;
+    public errorCode: string;
 
-    public static createDetailed(state: WindowState, errorCode: number, errorText: string): SendCommmandResponse {
-        return { state: state, errorCode: errorCode, errorText: errorText };
+    public static createDetailed(state: WindowState, errorState: WindowState, errorCode: string): SendCommmandResponse {
+        return { state: state, errorState: errorState, errorCode: errorCode };
     }
 
     public static create(state: WindowState): SendCommmandResponse {
-        return { state: state, errorCode: null, errorText: null };
+        return { state: state, errorState: null, errorCode: null };
     }
 }

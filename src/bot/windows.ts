@@ -85,32 +85,29 @@ export class Windows implements IBotModule {
         for (let i = 0; i < addresses.length; i++) {
             let address: number = addresses[i];
             let response: SendCommmandResponse = await this._windowsManager.sendCommand(address, 'state');
+            let rawStateString: string = this.stateToString(response.state);
             let stateString: string;
 
             switch (response.state) {
-                case WindowState.CommunicationError:
-                    stateString = `⚠️ ${gettext('Data transmit failure')}`;
-                    break;
-                case WindowState.NotResponding:
-                    stateString = `️️⚠️ ${gettext('Not responding')}`;
-                    break;
-                case WindowState.Error:
-                    stateString = `️⚠️ ${gettext('Failure')} (${response.errorText})`;
-                    break;
                 case WindowState.Closed:
-                    stateString = `️️☁️ ${gettext('Closed')}`;
+                    stateString = `️️☁️ ${rawStateString}`;
                     break;
                 case WindowState.Closing:
-                    stateString = `⬇️ ${gettext('Closing')}`;
+                    stateString = `⬇️ ${rawStateString}`;
                     break;
                 case WindowState.Open:
-                    stateString = `️️🔅 ${gettext('Open', 'State')}`;
+                    stateString = `️️🔅 ${rawStateString}`;
                     break;
                 case WindowState.Opening:
-                    stateString = `⬆️ ${gettext('Opening')}`;
+                    stateString = `⬆️ ${rawStateString}`;
                     break;
+                case WindowState.Error:
+                    stateString = `⚠️ ${rawStateString} (${this.errorCodeToString(response.errorCode, response.errorState)})`;
+                    break;
+                case WindowState.CommunicationError:
+                case WindowState.NotResponding:
                 default:
-                    stateString = `️⚠️ ${gettext('Unknown state')} '${response.state}'`;
+                    stateString = `⚠️ ${rawStateString}`;
                     break;
             }
 
@@ -179,6 +176,54 @@ export class Windows implements IBotModule {
         }
 
         return expression;
+    }
+
+    private stateToString(state: WindowState): string {
+        switch (state) {
+            case WindowState.CommunicationError:
+                return gettext('Data transmit failure');
+            case WindowState.NotResponding:
+                return gettext('Not responding');
+            case WindowState.Error:
+                return `${gettext('Failure')} `;
+            case WindowState.Closed:
+                return gettext('Closed');
+            case WindowState.Closing:
+                return gettext('Closing');
+            case WindowState.Open:
+                return gettext('Open', 'State');
+            case WindowState.Opening:
+                return gettext('Opening');
+            default:
+                return `${gettext('Unknown state')} '${state}'`;
+        }
+    }
+
+    private errorCodeToString(errorCode: string, errorState: WindowState): string {
+        switch (errorCode) {
+            case 'HIGH_CURRENT':
+                return gettext('Too high current in state {state}').formatUnicorn({state: this.stateToString(errorState)});
+            case 'UP_DOWN_ENABLED':
+                return gettext('Start failure. Up and down limits have been enabled');
+            case 'UP_ENABLED':
+                return gettext('Closed failure. Up limit has been enabled');
+            case 'DOWN_DISABLED':
+                return gettext('Closed failure. Down limit has been disabled');
+            case 'TIMEOUT_UP_STILL_ENABLED':
+                return gettext('Closing timeout. Up limit is still enabled');
+            case 'TIMEOUT_DOWN_NOT_ENABLED':
+                return gettext('Closing timeout. Down limit has not been enabled');
+            case 'DOWN_ENABLED':
+                return gettext('Open failure. Down limit has been enabled');
+            case 'UP_DISABLED':
+                return gettext('Open failure. Up limit has been disabled');
+            case 'TIMEOUT_DOWN_STILL_ENABLED':
+                return gettext('Opening timeout. Down limit is still enabled');
+            case 'TIMEOUT_UP_NOT_ENABLED':
+                return gettext('Opening timeout. Up limit has not been enabled');
+            default:
+                return errorCode;
+        }
     }
 }
 
