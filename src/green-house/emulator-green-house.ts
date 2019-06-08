@@ -31,7 +31,8 @@ export class EmulatorGreenHouse implements IGreenHouse {
         });
     }
 
-    public setWaterValve(isOpen: boolean): void {
+    public setWaterValve(valveId: number, isOpen: boolean): void {
+        // TODO: Implement multiple valves support in emulator
         this.isWaterOn = isOpen;
         this.eventEmitter.emit('water-changed', isOpen);
     }

@@ -58,6 +58,8 @@ export class BotConfiguration {
     public modules: BotModules;
 
     public windowAddresses: number[];
+
+    public watering: WateringConfiguration;
 }
 
 export class BotModules {
@@ -76,5 +78,17 @@ export class BotModules {
     public water: boolean;
     
     public windows: boolean;
+}
+
+export class WateringConfiguration {
+    public valves: WateringValveConfiguration[];
+}
+
+export class WateringValveConfiguration {
+    public id: number;
+
+    public name: string;
+
+    public pin: number;
 }
 

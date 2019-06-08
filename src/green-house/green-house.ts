@@ -5,7 +5,7 @@ export interface IGreenHouse {
 
     getSensorsData(): Promise<SensorsData>;
 
-    setWaterValve(isOpen: boolean): void;
+    setWaterValve(valveId: number, isOpen: boolean): void;
 
     setLights(isSwitchedOn: boolean): void;
 

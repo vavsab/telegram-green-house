@@ -9,7 +9,6 @@ export class RaspiGreenHouse implements IGreenHouse {
     private readonly sensor: any;
     private readonly rpio: any;
     private readonly windowsManager: WindowsManager;
-    private readonly waterPin: number = 38; // GPIO20
     private readonly lightsPin: number = 40; // GPIO21
     private readonly relayOff: number;
     private readonly relayOn: number;
@@ -29,7 +28,12 @@ export class RaspiGreenHouse implements IGreenHouse {
         this.relayOff = rpio.HIGH;
         this.relayOn = rpio.LOW;
 
-        rpio.open(this.waterPin, rpio.OUTPUT, this.relayOff);
+        if (config.bot.watering) {
+            for (const valve of config.bot.watering.valves) {
+                rpio.open(valve.pin, rpio.OUTPUT, this.relayOff);
+            } 
+        }
+
         rpio.open(this.lightsPin, rpio.OUTPUT, this.relayOff);
     }
 
@@ -43,8 +47,13 @@ export class RaspiGreenHouse implements IGreenHouse {
         });
     }
 
-    public setWaterValve(isOpen: boolean): void {
-        this.rpio.write(this.waterPin, isOpen ? this.relayOn : this.relayOff);
+    public setWaterValve(valveId: number, isOpen: boolean): void {
+        let valve = this.config.bot.watering.valves.find(v => v.id == valveId);
+        if (!valve) {
+            throw `Could not find valve config by id ${valveId}`;
+        }
+            
+        this.rpio.write(valve.pin, isOpen ? this.relayOn : this.relayOff);
     }
 
     public setLights(isSwitchedOn: boolean): void {
