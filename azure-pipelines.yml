@@ -16,6 +16,12 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
+    npm install -g gulp
+    npm install -g tsc
+  displayName: 'Install gulp & tsc'
+
+- script: |
     npm install
-    npm run build
+    tsc
+    gulp
   displayName: 'npm install and build'
