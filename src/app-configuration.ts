@@ -6,6 +6,8 @@ export class AppConfiguration {
     public bot: BotConfiguration;
 
     public language: string;
+
+    public downDetector: DownDetectorConfiguration;
 }
 
 export class WebPanelConfiguration {
@@ -90,5 +92,13 @@ export class WateringValveConfiguration {
     public name: string;
 
     public pin: number;
+}
+
+export class DownDetectorConfiguration {
+    public endpoint: string;
+    
+    public id: string;
+
+    public pingIntervalMs: number;
 }
 

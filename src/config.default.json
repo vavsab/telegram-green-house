@@ -55,5 +55,10 @@
                 }
             ] 
         }
+    },
+    "downDetector": {
+        "endpoint": null,
+        "id": null,
+        "pingIntervalMs": 600000
     }
 }

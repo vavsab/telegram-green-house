@@ -11,6 +11,7 @@ import { AppConfiguration } from './app-configuration';
 import { IGreenHouse } from './green-house/green-house';
 import * as Telegraf from 'telegraf';
 import { gettext } from './gettext';
+import * as request from 'request';
 
 export class Bot {
     public start(eventEmitter, config: AppConfiguration, greenHouse: IGreenHouse): void {
@@ -108,5 +109,26 @@ export class Bot {
     
         app.startPolling()
         eventEmitter.emit('botStarted');
+
+        if (config.downDetector 
+            && config.downDetector.endpoint 
+            && config.downDetector.id
+            && config.downDetector.pingIntervalMs) {
+            console.log('Down detector is enabled');
+
+            const pingDownDetector = () => {
+                request.post(config.downDetector.endpoint, {form: { id: config.downDetector.id }}, err => {
+                    if (err) {
+                        console.log('DownDetector > Error: ', err);
+                    }
+                });
+
+                setTimeout(pingDownDetector, config.downDetector.pingIntervalMs);
+            };
+            
+            pingDownDetector();
+        } else {
+            console.log('Down detector is disabled');
+        }
     }
 }
