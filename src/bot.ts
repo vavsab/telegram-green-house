@@ -1,4 +1,4 @@
-import { IBotModule, InitializeContext } from './bot/bot-module';
+import { IBotModule, InitializeContext, IKeyboardItem } from './bot/bot-module';
 import { Windows } from './bot/windows';
 import { Water } from './bot/water';
 import { Weather } from './bot/weather';
@@ -9,14 +9,14 @@ import { Sensors } from './bot/sensors';
 import { Photo } from './bot/photo';
 import { AppConfiguration } from './app-configuration';
 import { IGreenHouse } from './green-house/green-house';
-import * as Telegraf from 'telegraf';
+import { Telegraf, Markup } from 'telegraf';
 import { gettext } from './gettext';
 import * as request from 'request';
+import * as _ from 'lodash';
+import { TelegrafContext } from 'telegraf/typings/context';
 
 export class Bot {
     public start(eventEmitter, config: AppConfiguration, greenHouse: IGreenHouse): void {
-        const _ = require('lodash');
-    
         const botModules : IBotModule[] = [];
     
         function tryAddBotModule<TModule extends IBotModule>(type: new() => TModule, isEnabled: boolean) {
@@ -34,16 +34,16 @@ export class Bot {
         tryAddBotModule(Water, config.bot.modules.water);
         tryAddBotModule(Windows, config.bot.modules.windows);
         
-        const app = new Telegraf(config.bot.token)
+        const app = new Telegraf(config.bot.token);
     
         let adminChatId:number = config.bot.adminChatId;
         let allowedChatIds = config.bot.allowedChatIds;
         let firstTimeMessage = {};
     
-        var keyboardItems = [];
+        var keyboardItems: IKeyboardItem[] = [];
         botModules.forEach(m => m.initializeMenu(item => keyboardItems.push(item)));
     
-        function configureAnswerFor(id, answerCallback) {
+        function configureAnswerFor(id: string, answerCallback: (ctx: TelegrafContext) => void) {
             var item = keyboardItems.find(i => i.id == id);
             if (item === undefined || !item.isEnabled)
                 return;
@@ -75,7 +75,7 @@ export class Bot {
     
         let initializeContext: InitializeContext = {
             configureAnswerFor: configureAnswerFor,
-            configureAction: (actionText, actionCallback) => app.action(actionText, ctx => actionCallback(ctx)),
+            configureAction: (trigger, actionCallback) => app.action(trigger, ctx => actionCallback(ctx)),
             botApp: app,
             config: config,
             allowedChatIds: allowedChatIds,
@@ -93,7 +93,7 @@ export class Bot {
             .map(g => _(g).orderBy(i => i.order).map(i => i.button).value())
             .value();
     
-        const keyboard = Telegraf.Markup
+        const keyboard = Markup
             .keyboard(keyboardButtons)
             .oneTime(false)
             .resize()

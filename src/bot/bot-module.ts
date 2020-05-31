@@ -1,16 +1,32 @@
 import { AppConfiguration } from "../app-configuration";
 import { IGreenHouse } from "../green-house/green-house";
+import { TelegrafContext } from "telegraf/typings/context";
+import { HearsTriggers } from "telegraf/typings/composer";
+
+export interface IKeyboardItem {
+    isEnabled: boolean;
+
+    regex: RegExp;
+
+    id: string;
+
+    button: string;
+
+    row?: number;
+
+    order?: number;
+}
 
 export interface IBotModule {
-    initializeMenu(addKeyboardItem: any): void;
+    initializeMenu(addKeyboardItem: (item: IKeyboardItem) => void): void;
 
     initialize(context: InitializeContext): void;
 }
 
 export class InitializeContext {
-    public configureAnswerFor: (id:string, answerCallback:any) => void;
+    public configureAnswerFor: (id: string, answerCallback: (ctx: TelegrafContext) => void) => void;
 
-    public configureAction: any;
+    public configureAction: (trigger: HearsTriggers<TelegrafContext>, answerCallback: (ctx: TelegrafContext) => void) => void;
 
     public botApp: any;
 

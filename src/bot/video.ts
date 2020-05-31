@@ -26,7 +26,7 @@ export class Video implements IBotModule {
             ctx.editMessageText(`⏳ ${gettext('Please wait while video with duration of *{duration} sec* is recording...').formatUnicorn({duration: videoDuration})}`, {parse_mode: 'Markdown'});
 
             try {
-                let fileName = await context.greenHouse.recordVideo(videoDuration);
+                let fileName = await context.greenHouse.recordVideo(parseInt(videoDuration));
                 await ctx.replyWithVideo({ source: fileName });
                 await ctx.deleteMessage();
             } catch (error) {

@@ -1,19 +1,19 @@
-import { IBotModule, InitializeContext } from './bot-module'
+import { IBotModule, InitializeContext, IKeyboardItem } from './bot-module'
 import * as diskspace from 'diskspace';
 import * as os from 'os';
 import { databaseController } from '../databaseController';
-import { Markup, Extra } from 'telegraf';
+import { Markup } from 'telegraf';
 import { gettext } from '../gettext';
 
 export class Settings implements IBotModule {
-    initializeMenu(addKeyboardItem: any): void {
+    initializeMenu(addKeyboardItem: (item: IKeyboardItem) => void): void {
         addKeyboardItem({ id: 'settings', button: `⚙️ ${gettext('Settings')}`, regex: new RegExp(gettext('Settings')), row: 2, isEnabled: true, order: 100 });
     }
 
     initialize(context: InitializeContext): void {
-        var botConfig = context.config.bot;
+        const botConfig = context.config.bot;
 
-        context.configureAnswerFor('settings', async (ctx) => {
+        const showStatus = async reply => {
             try {
                 let messageParts = [];
                 messageParts.push(`↔️ ${gettext('Allowed range')} 🌡: *${botConfig.minTemperature} - ${botConfig.maxTemperature} °C*`);
@@ -23,18 +23,18 @@ export class Settings implements IBotModule {
                 messageParts.push(`🔆 ${gettext('Lights on range: {range}').formatUnicorn({range: botConfig.switchOnLightsTimeRange})}`)
 
                 let diskspaceInfo = await new Promise((resolve, reject) => {
-                    var rootDir = os.platform().toString() == 'win32' ? 'C' : '/';
+                    const rootDir = os.platform().toString() == 'win32' ? 'C' : '/';
                     diskspace.check(rootDir, (err, result) => {
                         if (err) {
                             reject(err);
                             return;
                         }
 
-                        var free = result.free / 1024 / 1024 / 1024;
-                        var total = result.total / 1024 / 1024 / 1024;
-                        var percents = result.used / result.total * 100;
+                        const free = result.free / 1024 / 1024 / 1024;
+                        const total = result.total / 1024 / 1024 / 1024;
+                        const percents = result.used / result.total * 100;
 
-                        let statistics = {
+                        const statistics = {
                             percent: percents.toFixed(0),
                             free: free.toFixed(1),
                             total: total.toFixed(1)
@@ -46,15 +46,15 @@ export class Settings implements IBotModule {
 
                 messageParts.push(diskspaceInfo)
 
-                let databaseSpaceInfo = await databaseController.run(async db => {
-                    let stats = await db.stats()
-                    let storageSize = stats.storageSize / 1024 / 1024;
+                const databaseSpaceInfo = await databaseController.run(async db => {
+                    const stats = await db.stats()
+                    const storageSize = stats.storageSize / 1024 / 1024;
                     return `🛢 ${gettext('Database: *{size}* MB').formatUnicorn({size: storageSize.toFixed(1)})}`
                 })
                 
                 messageParts.push(databaseSpaceInfo)
 
-                let settingsKeyboard: any[] = [];
+                const settingsKeyboard: any[] = [];
                 
                 if (context.config.webPanel.isEnabled && context.config.webPanel.link) {
                     settingsKeyboard.push(Markup.urlButton(gettext('Website'), context.config.webPanel.link));
@@ -64,12 +64,34 @@ export class Settings implements IBotModule {
                     settingsKeyboard.push(Markup.urlButton(gettext('Emulator'), context.config.webEmulator.link));
                 }
 
-                ctx.reply(messageParts.join('\n'), Extra.load({parse_mode: 'Markdown'}).markup(Markup.inlineKeyboard(settingsKeyboard)));
+                settingsKeyboard.push(Markup.callbackButton(`⚙️ ${gettext('Windows')}`, 'settings:windows'));
+
+                reply(messageParts.join('\n'), Markup.inlineKeyboard(settingsKeyboard).extra({ parse_mode: 'Markdown' }));
             } catch (err) {
                 let errMessage = `Telegram > Error while getting settings: ${err}`;
                 console.error(errMessage)
-                ctx.reply(errMessage);
+                reply(`⚠️ ${errMessage}`);
             }
-        }); 
+        }
+
+        context.configureAnswerFor('settings', ctx => showStatus(ctx.reply));
+
+        context.configureAction(/^settings$/, ctx => showStatus(ctx.editMessageText));
+
+        context.configureAction(/settings\:windows/, async ctx => {
+            let messageParts = [];
+            messageParts.push(`Windows settings`);
+            messageParts.push(`🎚 ${gettext('Auto open/close')}: *${botConfig.minTemperature ? `✅ ${gettext('on')}` : `🚫 ${gettext('off')}`}*`);
+            messageParts.push(`🌡 ${gettext('Open temperature')}: *${botConfig.minTemperature}* °C`);
+            messageParts.push(`🌡 ${gettext('Close temperature')}: *${botConfig.minTemperature}* °C`);
+
+            let settingsKeyboard: any[] = [];
+
+            settingsKeyboard.push(Markup.callbackButton('⬅️', 'settings'));
+            settingsKeyboard.push(Markup.callbackButton(`✏️ ${gettext('Open temperature')}`, 'settings:windows:openThreshold'));
+            settingsKeyboard.push(Markup.callbackButton(`✏️ ${gettext('Close temperature')}`, 'settings:windows:closeThreshold'));
+
+            ctx.editMessageText(messageParts.join('\n'), Markup.inlineKeyboard(settingsKeyboard).extra({ parse_mode: 'Markdown' }));
+        });
     }
 }

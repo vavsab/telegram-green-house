@@ -1,9 +1,9 @@
-import { IBotModule, InitializeContext } from './bot-module'
+import { IBotModule, InitializeContext, IKeyboardItem } from './bot-module'
 import { SensorsData } from '../green-house/green-house';
 import { gettext } from '../gettext';
 
 export class Sensors implements IBotModule {
-    initializeMenu(addKeyboardItem: any): void {
+    initializeMenu(addKeyboardItem: (item: IKeyboardItem) => void): void {
         addKeyboardItem({ id: 'sensors', button: `☀️ ${gettext('Sensors')}`, regex: new RegExp(gettext('Sensors')), row: 0, isEnabled: true, order: 1 });
     };
 
