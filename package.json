@@ -27,6 +27,7 @@
     "socket.io": "^1.7.3",
     "socket.io-client": "^1.7.3",
     "telegraf": "^3.38.0",
+    "telegraf-session-redis": "^5.1.0",
     "webshot": "^0.18.0"
   },
   "devDependencies": {

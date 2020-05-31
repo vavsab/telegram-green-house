@@ -1,4 +1,4 @@
-import { IBotModule, InitializeContext, IKeyboardItem } from './bot/bot-module';
+import { IBotModule, InitializeContext, IKeyboardItem, IBotContext, ISessionActionHandler } from './bot/bot-module';
 import { Windows } from './bot/windows';
 import { Water } from './bot/water';
 import { Weather } from './bot/weather';
@@ -14,6 +14,7 @@ import { gettext } from './gettext';
 import * as request from 'request';
 import * as _ from 'lodash';
 import { TelegrafContext } from 'telegraf/typings/context';
+import * as RedisSession from 'telegraf-session-redis';
 
 export class Bot {
     public start(eventEmitter, config: AppConfiguration, greenHouse: IGreenHouse): void {
@@ -36,11 +37,11 @@ export class Bot {
         
         const app = new Telegraf(config.bot.token);
     
-        let adminChatId:number = config.bot.adminChatId;
+        let adminChatId: number = config.bot.adminChatId;
         let allowedChatIds = config.bot.allowedChatIds;
         let firstTimeMessage = {};
-    
-        var keyboardItems: IKeyboardItem[] = [];
+
+        const keyboardItems: IKeyboardItem[] = [];
         botModules.forEach(m => m.initializeMenu(item => keyboardItems.push(item)));
     
         function configureAnswerFor(id: string, answerCallback: (ctx: TelegrafContext) => void) {
@@ -72,10 +73,46 @@ export class Bot {
     
             return ctx.reply(`⚠️ ${gettext('You have no access to this bot.\n If you have any questions, please write @ivan_sabelnikov')}`);
         });
+
+        const session = new (RedisSession as any)({
+            store: {
+                host: process.env.TELEGRAM_SESSION_HOST || '127.0.0.1',
+                port: process.env.TELEGRAM_SESSION_PORT || 6379
+            }
+        });
+          
+        app.use(session);
+
+        const sessionActionHandlers: ISessionActionHandler[] = [];
+
+        app.command('/clear', (ctx: IBotContext) => {
+            ctx.session = null;
+            ctx.reply(`🧹 ${gettext('Session was cleared')}`)
+        });
+
+        app.use((ctx: IBotContext, next) => {
+            const lock = ctx.session.lock;
+
+            if (!lock) {
+                return next();
+            }
+
+            var item = sessionActionHandlers.find(i => i.sessionLock.test(lock));
+            if (item === undefined) {
+                console.error(`Failed to find handler for session lock ${lock}`)
+                return next();
+            }
+
+            return item.answerCallback(ctx, () => {
+                ctx.session.lock = null;
+                return next();
+            });
+        });
     
         let initializeContext: InitializeContext = {
             configureAnswerFor: configureAnswerFor,
-            configureAction: (trigger, actionCallback) => app.action(trigger, ctx => actionCallback(ctx)),
+            configureAction: (trigger, actionCallback) => app.action(trigger, async ctx => await actionCallback(ctx)),
+            configureSessionAction: (sessionLock, answerCallback) => sessionActionHandlers.push({ sessionLock, answerCallback }),
             botApp: app,
             config: config,
             allowedChatIds: allowedChatIds,
