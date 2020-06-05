@@ -6,6 +6,7 @@ import { Markup } from 'telegraf';
 import { gettext } from '../gettext';
 import { InlineKeyboardButton } from 'telegraf/typings/markup';
 import { IncomingMessage } from 'telegraf/typings/telegram-types';
+import { WindowsConfig } from '../green-house/db-config/db-config-manager';
 
 export class Settings implements IBotModule {
     initializeMenu(addKeyboardItem: (item: IKeyboardItem) => void): void {
@@ -81,11 +82,14 @@ export class Settings implements IBotModule {
         context.configureAction(/settings$/, ctx => showStatus(ctx.editMessageText));
 
         context.configureAction(/settings_windows$/, async ctx => {
+
+            const windowsConfig = context.dbConfig.get(WindowsConfig);
+
             let messageParts = [];
             messageParts.push(`Windows settings`);
-            messageParts.push(`🎚 ${gettext('Auto open/close')}: *${botConfig.minTemperature ? `✅ ${gettext('on')}` : `🚫 ${gettext('off')}`}*`);
-            messageParts.push(`🌡 ${gettext('Open temperature')}: *${botConfig.minTemperature}* °C`);
-            messageParts.push(`🌡 ${gettext('Close temperature')}: *${botConfig.minTemperature}* °C`);
+            messageParts.push(`🎚 ${gettext('Auto open/close')}: *${windowsConfig.automateOpenClose ? `✅ ${gettext('on')}` : `🚫 ${gettext('off')}`}*`);
+            messageParts.push(`🌡 ${gettext('Open temperature')}: *${windowsConfig.openTemperature}* °C`);
+            messageParts.push(`🌡 ${gettext('Close temperature')}: *${windowsConfig.closeTemperature}* °C`);
 
             let settingsKeyboard: any[] = [];
 
@@ -117,6 +121,7 @@ export class Settings implements IBotModule {
                     messageParts.push(`⚠️ ${gettext('Value {value} is not in range {downLimit}..{upLimit}').formatUnicorn({ value, downLimit, upLimit })}`);
                 } else {
                     ctx.session.lock = null;
+                    context.dbConfig.set(WindowsConfig, { openTemperature: value });
                     messageParts.push(`✅ ${gettext('Value {value} was saved').formatUnicorn({ value })}`);    
                 }
             } else {

@@ -15,6 +15,7 @@ import * as request from 'request';
 import * as _ from 'lodash';
 import { TelegrafContext } from 'telegraf/typings/context';
 import * as RedisSession from 'telegraf-session-redis';
+import { DbConfigManager } from './green-house/db-config/db-config-manager';
 
 export class Bot {
     public start(eventEmitter, config: AppConfiguration, greenHouse: IGreenHouse): void {
@@ -108,6 +109,8 @@ export class Bot {
                 return next();
             });
         });
+
+        const dbConfig = new DbConfigManager();
     
         let initializeContext: InitializeContext = {
             configureAnswerFor: configureAnswerFor,
@@ -118,7 +121,8 @@ export class Bot {
             allowedChatIds: allowedChatIds,
             adminChatId: adminChatId,
             eventEmitter: eventEmitter,
-            greenHouse: greenHouse
+            greenHouse: greenHouse,
+            dbConfig: dbConfig
         }
     
         botModules.forEach(m => m.initialize(initializeContext));
