@@ -20,7 +20,7 @@
     "jquery": "^3.2.1",
     "lodash": "^4.17.10",
     "moment": "^2.19.1",
-    "mongodb": "^2.2.33",
+    "mongodb": "^3.5.9",
     "natives": "^1.1.6",
     "node-gettext": "^2.0.0",
     "request": "^2.88.0",
@@ -28,10 +28,12 @@
     "socket.io-client": "^1.7.3",
     "telegraf": "^3.38.0",
     "telegraf-session-redis": "^5.1.0",
+    "typed-event-emitter": "^2.0.0",
     "webshot": "^0.18.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.116",
+    "@types/mongodb": "^3.5.22",
     "@types/node": "^10.17.24",
     "@types/request": "^2.48.2",
     "@types/socket.io": "^1.4.36",

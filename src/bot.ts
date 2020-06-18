@@ -15,7 +15,7 @@ import * as request from 'request';
 import * as _ from 'lodash';
 import { TelegrafContext } from 'telegraf/typings/context';
 import * as RedisSession from 'telegraf-session-redis';
-import { DbConfigManager } from './green-house/db-config/db-config-manager';
+import { DbConfigManager, ChangedConfig } from './green-house/db-config/db-config-manager';
 
 export class Bot {
     public start(eventEmitter, config: AppConfiguration, greenHouse: IGreenHouse): void {
@@ -111,6 +111,17 @@ export class Bot {
         });
 
         const dbConfig = new DbConfigManager();
+
+        dbConfig.onConfigChanged(changedConfig => {
+            const message = `⚠️ ${gettext('Config was changed by {userInfo}. Key {key}, value: {value}').formatUnicorn({
+                userInfo: changedConfig.userInfo,
+                key: changedConfig.key, 
+                value: JSON.stringify(changedConfig.newConfig)
+            })}`;
+
+            console.log(message);
+            app.telegram.sendMessage(adminChatId, message);
+        });
     
         let initializeContext: InitializeContext = {
             configureAnswerFor: configureAnswerFor,

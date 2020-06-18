@@ -1,16 +1,14 @@
-const mongoClient = require('mongodb').MongoClient;
+import { MongoClient, Db } from 'mongodb';
 
 class DatabaseController {
-    private database = null;
 
-    run(callback: any) {
-        return mongoClient.connect('mongodb://localhost:27017/green-house')
-        .then(db => {
-            this.database = db;
-            return db;
-        })
-        .then(() => callback(this.database))
-        .then((result) => this.database.close().then(() => result));
+    async run<TResult>(callback: (client: Db) => Promise<TResult>): Promise<TResult> {
+        const client = await MongoClient.connect('mongodb://localhost:27017');
+        const db = client.db('green-house');
+        const result = await callback(db);
+        await client.close();
+
+        return result;
     }
 }
 

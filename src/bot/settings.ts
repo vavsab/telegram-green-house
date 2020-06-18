@@ -121,7 +121,7 @@ export class Settings implements IBotModule {
                     messageParts.push(`⚠️ ${gettext('Value {value} is not in range {downLimit}..{upLimit}').formatUnicorn({ value, downLimit, upLimit })}`);
                 } else {
                     ctx.session.lock = null;
-                    context.dbConfig.set(WindowsConfig, { openTemperature: value });
+                    context.dbConfig.set(WindowsConfig, { openTemperature: value }, `${ctx.from.first_name} ${ctx.from.last_name} (${ctx.from.id})`);
                     messageParts.push(`✅ ${gettext('Value {value} was saved').formatUnicorn({ value })}`);    
                 }
             } else {
@@ -143,7 +143,13 @@ export class Settings implements IBotModule {
             });
         }
 
+        const rangeValidator: (downLimit: number, upLimit: number) => Validator = {
+            
+        }
+
         configureSetting('openThreshold', gettext('Edit open threshold'), 45, 5);
         configureSetting('closeThreshold', gettext('Edit close threshold'), 45, 5);
     }
 }
+
+type Validator = (value: string) => string | null;
