@@ -13,14 +13,14 @@ export class DbConfigManager extends EventEmitter {
 
     onConfigChanged = this.registerEvent<(changedConfig: ChangedConfig) => void>();
 
-    public get<T>(classRef: new() => T): T {
+    public async get<T>(classRef: new() => T): Promise<T> {
         const defaultValue = new classRef();
         const key = (defaultValue as any).configKey;
         if (!key) {
             throw 'Decorate config class with @Config';
         }
 
-        const dbValue = this.readConfigFromDb(key);
+        const dbValue = await this.readConfigFromDb(key);
 
         if (dbValue) {
             // If new values appear in config, they will be set up to defaults on the fly.
@@ -30,7 +30,7 @@ export class DbConfigManager extends EventEmitter {
         return defaultValue;
     }
 
-    public set<T>(classRef: new() => T, value: Partial<T>, userInfo: string) {
+    public async set<T>(classRef: new() => T, value: Partial<T>, userInfo: string) {
         const defaultValue = new classRef();
         const key = (defaultValue as any).configKey;
         if (!key) {
@@ -38,22 +38,45 @@ export class DbConfigManager extends EventEmitter {
         }
 
         const currentConfig = this.get(classRef);
-        const newConfig = Object.assign(currentConfig, value);
+        const newConfig = new classRef();
+        Object.assign(newConfig, defaultValue, currentConfig, value);
 
-        this.saveConfigToDb(key, newConfig);
+        await this.saveConfigToDb(key, newConfig);
         this.emit(this.onConfigChanged, { key, newConfig, userInfo })
     }
 
-    private async readConfigFromDb(key: string): Promise<string | null> {
+    private async readConfigFromDb(key: string): Promise<any | null> {
         return await databaseController.run<string | null>(async db => {
-            return await db.collection('settings').findOne({ key: key });
+            const value = await db.collection('settings').findOne({ key: key });
+
+            if (value) {
+                delete value.key;
+            }
+            
+            return value;
         });
     }
 
     private async saveConfigToDb(key: string, value: any): Promise<void> {
-        await databaseController.run(async db => {
-            await db.collection('settings').insertOne(value);
+        const filter = { key: key };
+
+        const existing = await databaseController.run(async db => {
+            return await db.collection('settings').findOne(filter);
         });
+
+        console.log(`Existing: ${JSON.stringify(existing)}`)
+
+        await databaseController.run(async db => {
+            const document = db.collection('settings');
+            const valueToSave = { key, ...value };
+
+            if (existing) {
+                await document.updateOne(filter, { $set: valueToSave } );
+            } else {
+                await document.insertOne(valueToSave);
+            }
+        });
+        
     }
 }
 

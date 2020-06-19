@@ -41,17 +41,11 @@ export class BotConfiguration {
 
     public enableCamera: boolean;
 
-    public maxTemperature: number;
-
-    public minTemperature: number;
-
     public weatherLink: string;
 
     public saveToDbTimeoutInMinutes: number;
 
     public takePhotoDelayInSeconds: number;
-
-    public intervalBetweenWarningsInMinutes: number;
 
     public switchOnLightsTimeRange: string;
 

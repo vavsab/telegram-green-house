@@ -15,7 +15,7 @@ import * as request from 'request';
 import * as _ from 'lodash';
 import { TelegrafContext } from 'telegraf/typings/context';
 import * as RedisSession from 'telegraf-session-redis';
-import { DbConfigManager, ChangedConfig } from './green-house/db-config/db-config-manager';
+import { DbConfigManager } from './green-house/db-config/db-config-manager';
 
 export class Bot {
     public start(eventEmitter, config: AppConfiguration, greenHouse: IGreenHouse): void {
@@ -70,7 +70,12 @@ export class Bot {
                 return next();
             }
     
-            app.telegram.sendMessage(adminChatId, `⚠️ ${gettext('Access denied for user {user}, chat: {chat}').formatUnicorn({user: JSON.stringify(ctx.from), chat: JSON.stringify(ctx.chat)})}`);
+            app.telegram.sendMessage(adminChatId, `⚠️ ${gettext('Access denied for user {user}, chat: {chat}, message: {message}')
+                .formatUnicorn({
+                    user: JSON.stringify(ctx.from),
+                    chat: JSON.stringify(ctx.chat),
+                    message: JSON.stringify(ctx.message)
+                })}`);
     
             return ctx.reply(`⚠️ ${gettext('You have no access to this bot.\n If you have any questions, please write @ivan_sabelnikov')}`);
         });

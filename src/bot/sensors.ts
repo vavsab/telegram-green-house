@@ -1,6 +1,7 @@
 import { IBotModule, InitializeContext, IKeyboardItem } from './bot-module'
 import { SensorsData } from '../green-house/green-house';
 import { gettext } from '../gettext';
+import { SensorsConfig } from '../green-house/db-config/db-config-manager';
 
 export class Sensors implements IBotModule {
     initializeMenu(addKeyboardItem: (item: IKeyboardItem) => void): void {
@@ -8,7 +9,7 @@ export class Sensors implements IBotModule {
     };
 
     initialize(context: InitializeContext): void {
-        let config = context.config;
+        let dbConfig = context.dbConfig;
 
         let latestResult: SensorsData = null;
 
@@ -29,25 +30,27 @@ export class Sensors implements IBotModule {
             ctx.reply(message);
         });
 
-        function sensorDataCallback() {
+        async function sensorDataCallback(): Promise<void> {
             let data = latestResult;
 
-            if (new Date().getTime() - lastWarningMessageDateTime.getTime() < 1000 * 60 * config.bot.intervalBetweenWarningsInMinutes) {
+            var config = await dbConfig.get(SensorsConfig);
+
+            if (new Date().getTime() - lastWarningMessageDateTime.getTime() < 1000 * 60 * config.temperatureThresholdViolationNotificationIntervalMinutes) {
                 return;
             }
 
             let message = null;
 
-            if (data.temperature <= config.bot.minTemperature) {
-                message = `⚠️ ❄️ *${data.temperature.toFixed(1)} °C*`
+            if (data.temperature <= config.coldTemperatureThreshold) {
+                message = `❄️ *${data.temperature.toFixed(1)} °C*`
                 if (context.greenHouse.isEmulator) {
                     message += testModeMessageAppendix
                 }
                 console.log('Telegram > Sending low temperature warning')
             }
 
-            if (data.temperature >= config.bot.maxTemperature) {
-                message = `⚠️ 🔥 *${data.temperature.toFixed(1)} °C*`
+            if (data.temperature >= config.hotTemperatureThreshold) {
+                message = `🔥 *${data.temperature.toFixed(1)} °C*`
                 if (context.greenHouse.isEmulator) {
                     message += testModeMessageAppendix
                 }

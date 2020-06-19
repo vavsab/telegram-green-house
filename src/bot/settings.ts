@@ -1,4 +1,4 @@
-import { IBotModule, InitializeContext, IKeyboardItem, IBotSession, IBotContext } from './bot-module'
+import { IBotModule, InitializeContext, IKeyboardItem, IBotContext } from './bot-module'
 import * as diskspace from 'diskspace';
 import * as os from 'os';
 import { databaseController } from '../databaseController';
@@ -6,7 +6,7 @@ import { Markup } from 'telegraf';
 import { gettext } from '../gettext';
 import { InlineKeyboardButton } from 'telegraf/typings/markup';
 import { IncomingMessage } from 'telegraf/typings/telegram-types';
-import { WindowsConfig } from '../green-house/db-config/db-config-manager';
+import { WindowsConfig, DbConfigManager, SensorsConfig } from '../green-house/db-config/db-config-manager';
 
 export class Settings implements IBotModule {
     initializeMenu(addKeyboardItem: (item: IKeyboardItem) => void): void {
@@ -18,9 +18,11 @@ export class Settings implements IBotModule {
 
         const showStatus = async reply => {
             try {
+                const sensorsConfig = await context.dbConfig.get(SensorsConfig);
+
                 let messageParts = [];
-                messageParts.push(`↔️ ${gettext('Allowed range')} 🌡: *${botConfig.minTemperature} - ${botConfig.maxTemperature} °C*`);
-                messageParts.push(`⚡️ ${gettext('Notification on exceeding: every *{min} min*').formatUnicorn({ min: botConfig.intervalBetweenWarningsInMinutes })}`)
+                messageParts.push(`↔️ ${gettext('Allowed range')} 🌡: *${sensorsConfig.coldTemperatureThreshold} - ${sensorsConfig.hotTemperatureThreshold} °C*`);
+                messageParts.push(`⚡️ ${gettext('Notification on exceeding: every *{min} min*').formatUnicorn({ min: sensorsConfig.temperatureThresholdViolationNotificationIntervalMinutes })}`)
                 messageParts.push(`💾 ${gettext('Save sensors data: every *{min} min*').formatUnicorn({min: botConfig.saveToDbTimeoutInMinutes})}`)
                 messageParts.push(`🕘 ${gettext('Delay before taking a photo: *{sec} sec*').formatUnicorn({sec: botConfig.takePhotoDelayInSeconds})}`)
                 messageParts.push(`🔆 ${gettext('Lights on range: {range}').formatUnicorn({range: botConfig.switchOnLightsTimeRange})}`)
@@ -67,6 +69,7 @@ export class Settings implements IBotModule {
                     settingsKeyboard.push(Markup.urlButton(gettext('Emulator'), context.config.webEmulator.link));
                 }
 
+                settingsKeyboard.push(Markup.callbackButton(`✏️ ${gettext('Temperature')}`, 'settings_sensors_threshold'));
                 settingsKeyboard.push(Markup.callbackButton(`⚙️ ${gettext('Windows')}`, 'settings_windows'));
 
                 reply(messageParts.join('\n'), Markup.inlineKeyboard(settingsKeyboard).extra({ parse_mode: 'Markdown' }));
@@ -83,29 +86,52 @@ export class Settings implements IBotModule {
 
         context.configureAction(/settings_windows$/, async ctx => {
 
-            const windowsConfig = context.dbConfig.get(WindowsConfig);
+            const windowsConfig = await context.dbConfig.get(WindowsConfig);
 
             let messageParts = [];
             messageParts.push(`Windows settings`);
-            messageParts.push(`🎚 ${gettext('Auto open/close')}: *${windowsConfig.automateOpenClose ? `✅ ${gettext('on')}` : `🚫 ${gettext('off')}`}*`);
-            messageParts.push(`🌡 ${gettext('Open temperature')}: *${windowsConfig.openTemperature}* °C`);
+            messageParts.push(`🎚 ${gettext('Auto close/open')}: *${windowsConfig.automateOpenClose ? `✅ ${gettext('on')}` : `🚫 ${gettext('off')}`}*`);
             messageParts.push(`🌡 ${gettext('Close temperature')}: *${windowsConfig.closeTemperature}* °C`);
+            messageParts.push(`🌡 ${gettext('Open temperature')}: *${windowsConfig.openTemperature}* °C`);
 
             let settingsKeyboard: any[] = [];
 
             settingsKeyboard.push(Markup.callbackButton('⬅️', 'settings'));
-            settingsKeyboard.push(Markup.callbackButton(`✏️ ${gettext('Open temperature')}`, 'settings_windows_openThreshold'));
-            settingsKeyboard.push(Markup.callbackButton(`✏️ ${gettext('Close temperature')}`, 'settings_windows_closeThreshold'));
+            settingsKeyboard.push(Markup.callbackButton(`✏️ ${gettext('Close/Open')}`, 'settings_windows_closeOpenThreshold'));
+
+            if (windowsConfig.automateOpenClose) {
+                settingsKeyboard.push(Markup.callbackButton(`🚫 ${gettext('Auto off')}`, 'settings_windows_automate_off'));
+            } else {
+                settingsKeyboard.push(Markup.callbackButton(`✅ ${gettext('Auto on')}`, 'settings_windows_automate_on'));
+            }
 
             ctx.editMessageText(messageParts.join('\n'), Markup.inlineKeyboard(settingsKeyboard).extra({ parse_mode: 'Markdown' }));
         });
 
-        const editSetting = async (key: string, header: string, upLimit: number, downLimit: number, ctx: IBotContext, reply, message?: IncomingMessage, release?: () => Promise<void>) => {
-            if (release && ctx.updateType === 'callback_query' && ctx.callbackQuery.data === 'settings_windows') {
+        context.configureAction(/settings_windows_automate_off/, async ctx => {
+            ctx.answerCbQuery('This feature in not supported yet');
+        });
+
+        context.configureAction(/settings_windows_automate_on/, async ctx => {
+            ctx.answerCbQuery('This feature in not supported yet');
+        });
+
+        const releaseActions = []
+
+        const editSetting = async (
+            key: string,
+            header: string,
+            ctx: IBotContext,
+            reply,
+            valueApplier: ValueApplier,
+            backMenu: string,
+            message?: IncomingMessage,
+            release?: () => Promise<void>) => {
+            if (release && ctx.updateType === 'callback_query' && releaseActions.find(x => x == ctx.callbackQuery.data)) {
                 return await release();
             }
 
-            ctx.session.lock = `settings_windows_${key}`;
+            ctx.session.lock = `settings_${key}`;
 
             let messageParts = [];
             let settingsKeyboard: InlineKeyboardButton[] = [];
@@ -113,43 +139,79 @@ export class Settings implements IBotModule {
             messageParts.push(`✏️ ${header}`);
 
             if (message && message.text) {
-                const value = parseInt(message.text);
-
-                if (isNaN(value) || value == null) {
-                    messageParts.push(`⚠️ ${gettext('Value {value} is not a number').formatUnicorn({ value: message.text })}`);
-                } else if (value > upLimit || value < downLimit) {
-                    messageParts.push(`⚠️ ${gettext('Value {value} is not in range {downLimit}..{upLimit}').formatUnicorn({ value, downLimit, upLimit })}`);
-                } else {
+                const { success, details } = await valueApplier({ botContext: ctx, dbConfig: context.dbConfig, value: message.text });
+                if (success) {
                     ctx.session.lock = null;
-                    context.dbConfig.set(WindowsConfig, { openTemperature: value }, `${ctx.from.first_name} ${ctx.from.last_name} (${ctx.from.id})`);
-                    messageParts.push(`✅ ${gettext('Value {value} was saved').formatUnicorn({ value })}`);    
+                    messageParts.push(`✅ ${gettext('Value {value} was saved').formatUnicorn({ value: details })}`);
+                } else {
+                    messageParts.push(`⚠️ ${details}`);
                 }
             } else {
                 messageParts.push(`⌨️ ${gettext('Please send a new value')}:`);
             }
 
-            settingsKeyboard.push(Markup.callbackButton('⬅️', 'settings_windows'));
+            settingsKeyboard.push(Markup.callbackButton('⬅️', backMenu));
 
             await reply(messageParts.join('\n'), Markup.inlineKeyboard(settingsKeyboard).extra({ parse_mode: 'Markdown' }));
         }
 
-        const configureSetting = (key: string, header: string, upLimit: number, downLimit: number) => {
-            context.configureSessionAction(new RegExp(`settings_windows_${key}`), async (ctx, release) => {
-                await editSetting(key, header, upLimit, downLimit, ctx, ctx.reply, ctx.message, release);
+        const configureSetting = (key: string, header: string, valueApplier: ValueApplier, backMenu: string) => {
+            releaseActions.push(backMenu);
+
+            const regex = new RegExp(`settings_${key}`);
+
+            context.configureSessionAction(regex, async (ctx, release) => {
+                await editSetting(key, header, ctx, ctx.reply, valueApplier, backMenu, ctx.message, release);
             });
     
-            context.configureAction(new RegExp(`settings_windows_${key}`), async ctx => {
-                await editSetting(key, header, upLimit, downLimit, ctx, ctx.reply);
+            context.configureAction(regex, async ctx => {
+                await editSetting(key, header, ctx, ctx.editMessageText, valueApplier, backMenu);
             });
         }
 
-        const rangeValidator: (downLimit: number, upLimit: number) => Validator = {
-            
-        }
+        configureSetting('windows_closeOpenThreshold', gettext('Edit close/open range (format: "14-23" or "14 23")'), this.rangeApplier(5, 50, WindowsConfig, (down, up) => {
+            return { closeTemperature: down, openTemperature: up };
+        }), 'settings_windows');
 
-        configureSetting('openThreshold', gettext('Edit open threshold'), 45, 5);
-        configureSetting('closeThreshold', gettext('Edit close threshold'), 45, 5);
+        configureSetting('sensors_threshold', gettext('Edit temperature range (format: "14-23" or "14 23")'), this.rangeApplier(5, 50, SensorsConfig, (down, up) => {
+            return { coldTemperatureThreshold: down, hotTemperatureThreshold: up };
+        }), 'settings');
+    }
+
+    rangeApplier<TConfig>(downLimit: number, upLimit: number, configRef: new() => TConfig, setter: (down: number, up: number) => Partial<TConfig>): ValueApplier {
+        return async applierContext => {
+            const regex = /(\d+)[ \-](\d+)/;
+            const regexArray = regex.exec(applierContext.value);
+
+            if (regexArray == null) {
+                return { success: false, details: gettext('Invalid range format. Use "<down>-<up>" or "<down> <up>"') };
+            }
+
+            const down = parseInt(regexArray[1]);
+            const up = parseInt(regexArray[2]);
+
+            if (down >= up) {
+                return  { success: false, details: gettext('Down value is greater or equal up value') };
+            }
+            
+            if (down < downLimit || up > upLimit) {
+                return  { success: false, details: `${gettext('Range {down}...{up} is not in range {downLimit}..{upLimit}').formatUnicorn({ down, up, downLimit, upLimit })}` };
+            }
+
+            const from = applierContext.botContext.from;
+            await applierContext.dbConfig.set(configRef, setter(down, up), `${from.first_name} ${from.last_name} (${from.id})`);
+
+            return { success: true, details: `${down}...${up}` };
+        };
     }
 }
 
-type Validator = (value: string) => string | null;
+class ValueApplierContext {
+    botContext: IBotContext;
+
+    value: string;
+
+    dbConfig: DbConfigManager;
+}
+
+type ValueApplier = (context: ValueApplierContext) => Promise<{ success: boolean, details: string }>;

@@ -21,17 +21,9 @@ export class Chart implements IBotModule {
             .then(messageId => {
                 statusMessageId = messageId;
     
-                return databaseController.run(db => {
-                    return new Promise((resolve, reject) => {
-                        let filterDate = new Date().getTime() - 1000 * 60 * 60 * 24;
-                        db.collection('data').find({date: { $gt: new Date(filterDate)}}).toArray((err, sensorData) => {
-                            if (err) {
-                                reject(err);
-                            } else {
-                                resolve(sensorData);
-                            }
-                        })
-                    });
+                return databaseController.run(async db => {
+                    const filterDate = new Date().getTime() - 1000 * 60 * 60 * 24;
+                    return await db.collection('data').find({date: { $gt: new Date(filterDate)}}).toArray(); 
                 })
                 .then((sensorData) => {
                     return new Promise((resolve, reject) => {
