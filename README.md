@@ -1,6 +1,8 @@
 # telegram-green-house 
 [English version](README.EN.md)
 
+[![Build Status](https://copter-monitor.visualstudio.com/copter-monitor/_apis/build/status/vavsab.telegram-green-house?branchName=master)](https://copter-monitor.visualstudio.com/copter-monitor/_build/latest?definitionId=1&branchName=master)
+
 Открытый телеграм бот, который устанавливается в теплицу. 
 
 ## Основные функции:
