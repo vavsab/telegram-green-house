@@ -26,7 +26,7 @@ steps:
     gulp
   displayName: 'npm install and build'
 
-  - task: PublishBuildArtifacts@1
+- task: PublishBuildArtifacts@1
   inputs:
     pathtoPublish: 'dist'
     artifactName: npm
