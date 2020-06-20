@@ -1,13 +1,31 @@
 {
-  "name": "green-house",
-  "version": "1.0.0",
+  "name": "@octopan/telegram-green-house",
+  "version": "1.0.1",
   "license": "MIT",
   "angular-cli": {},
   "scripts": {
     "compile": "npx tsc && node ./dist/app.js",
     "start": "gulp && nodemon --delay 3.0 -e ts --exec \"npm run compile\""
   },
-  "private": true,
+  "description": "Monitor & control green-house with Telegram & Raspberry Pi",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vavsab/telegram-green-house.git"
+  },
+  "keywords": [
+    "raspberry",
+    "pi",
+    "green-house",
+    "green",
+    "telegram",
+    "bot",
+    "windows",
+    "watering",
+    "temperature",
+    "humidity",
+    "notification"
+  ],
   "dependencies": {
     "angular": "^1.6.4",
     "bootstrap": "^3.3.7",
@@ -40,5 +58,10 @@
     "gettext-extractor": "^3.4.0",
     "gulp": "^3.9.1",
     "typescript": "^3.9.3"
-  }
+  },
+  "author": "Ivan Sabelnikov",
+  "bugs": {
+    "url": "https://github.com/vavsab/telegram-green-house/issues"
+  },
+  "homepage": "https://github.com/vavsab/telegram-green-house#readme"
 }
