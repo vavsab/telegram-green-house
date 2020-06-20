@@ -1,7 +1,7 @@
 import { IBotModule, InitializeContext, IKeyboardItem, IBotContext } from './bot-module'
 import * as diskspace from 'diskspace';
 import * as os from 'os';
-import { databaseController } from '../databaseController';
+import { databaseController } from '../database-controller';
 import { Markup } from 'telegraf';
 import { gettext } from '../gettext';
 import { InlineKeyboardButton } from 'telegraf/typings/markup';
@@ -109,11 +109,13 @@ export class Settings implements IBotModule {
         });
 
         context.configureAction(/settings_windows_automate_off/, async ctx => {
-            ctx.answerCbQuery('This feature in not supported yet');
+            const from = ctx.from;
+            await context.dbConfig.set(WindowsConfig, { automateOpenClose: false }, `${from.first_name} ${from.last_name} (${from.id})`);
         });
 
         context.configureAction(/settings_windows_automate_on/, async ctx => {
-            ctx.answerCbQuery('This feature in not supported yet');
+            const from = ctx.from;
+            await context.dbConfig.set(WindowsConfig, { automateOpenClose: true }, `${from.first_name} ${from.last_name} (${from.id})`);
         });
 
         const releaseActions = []

@@ -3,6 +3,7 @@ import { IGreenHouse } from "../green-house/green-house";
 import { TelegrafContext } from "telegraf/typings/context";
 import { HearsTriggers } from "telegraf/typings/composer";
 import { DbConfigManager } from "../green-house/db-config/db-config-manager";
+import { SensorsSource } from "../sensor/sensors-source";
 
 export interface IBotContext extends TelegrafContext {
     session?:  IBotSession;
@@ -53,7 +54,7 @@ export class InitializeContext {
 
     public adminChatId: number;
 
-    public eventEmitter: any;
+    public sensorsSource: SensorsSource;
 
     public greenHouse: IGreenHouse;
 

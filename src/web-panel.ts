@@ -1,11 +1,11 @@
 import * as express from 'express';
-import * as events from 'events';
 import { AppConfiguration } from './app-configuration';
 import { SensorsData } from './green-house/green-house';
 import * as socket from 'socket.io';
 import * as resources from './resources';
 import { createServer } from 'http';
 import { gettext } from './gettext';
+import { SensorsSource } from './sensor/sensors-source';
 
 export class WebPanel {
     private _latestResult: SensorsData = {
@@ -13,11 +13,11 @@ export class WebPanel {
         humidity: undefined
     };
 
-    public start(config: AppConfiguration, eventEmitter: events): void {        
-        eventEmitter.on('sensorData', (data) => {
-            this._latestResult = data;
-            io.emit('sensorData', data);
-        });
+    public start(config: AppConfiguration, sensorsSource: SensorsSource): void {        
+        sensorsSource.onDataReceived(x => {
+            this._latestResult = x;
+            io.emit('sensorData', x);
+        })
         
         let app = express();
         let apiRouter = express.Router();;

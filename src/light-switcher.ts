@@ -1,11 +1,21 @@
 import { AppConfiguration } from "./app-configuration";
 import { IGreenHouse } from "./green-house/green-house";
+import * as moment from 'moment'
 
-const moment = require('moment');
+export class LightSwitcher {
+    private isEnabled = false;
 
-let start = (config: AppConfiguration, greenHouse: IGreenHouse) => {
+    constructor(
+        private config: AppConfiguration,
+        private greenHouse: IGreenHouse) {}
+
+    public start() {
+        if (this.isEnabled) {
+            throw 'Cannot start light switcher twice';
+        }
+
         const timeRangeRegex = /^(\d{2}):(\d{2})-(\d{2}):(\d{2})$/
-        let match = config.bot.switchOnLightsTimeRange.match(timeRangeRegex)
+        let match = this.config.bot.switchOnLightsTimeRange.match(timeRangeRegex)
         if (!match){
                 console.log('Light switcher > Could not parse time confifuration. Light switching is disabled');
                 return;
@@ -19,16 +29,16 @@ let start = (config: AppConfiguration, greenHouse: IGreenHouse) => {
         console.log(`Light switcher > Parsed config > ${startHour}:${startMinute}-${endHour}:${endMinute}`)
 
         const lightConfiguration = {
-                startTicks: moment().startOf('day').set('hour', startHour).set('minute', startMinute) - moment().startOf('day'),
-                endTicks: moment().startOf('day').set('hour', endHour).set('minute', endMinute) - moment().startOf('day')
+                startTicks: <any> moment().startOf('day').set('hour', startHour).set('minute', startMinute) - <any>moment().startOf('day'),
+                endTicks:<any>moment().startOf('day').set('hour', endHour).set('minute', endMinute) - <any>moment().startOf('day')
         }
 
         let isSwitchedOn = false;
-        greenHouse.setLights(isSwitchedOn);
+        this.greenHouse.setLights(isSwitchedOn);
 
         function updateLightsState() {
-                let todayStart = moment().startOf('day') + lightConfiguration.startTicks
-                let todayEnd = moment().startOf('day') + lightConfiguration.endTicks
+                let todayStart = <any>moment().startOf('day') + lightConfiguration.startTicks
+                let todayEnd = <any>moment().startOf('day') + lightConfiguration.endTicks
                 let now = moment().valueOf();
 
                 let switchOn = false;
@@ -37,7 +47,7 @@ let start = (config: AppConfiguration, greenHouse: IGreenHouse) => {
                 }
 
                 if (isSwitchedOn != switchOn) {
-                        greenHouse.setLights(switchOn);
+                        this.greenHouse.setLights(switchOn);
                         console.log('Light switcher > Switched lights ' + (switchOn ? 'on' : 'off'))
                         isSwitchedOn = switchOn;
                 }                        
@@ -45,6 +55,7 @@ let start = (config: AppConfiguration, greenHouse: IGreenHouse) => {
 
         updateLightsState();
         setInterval(updateLightsState, 1000 * 10); // Update state every 10 sec
-}
 
-export { start };
+        this.isEnabled = true;
+    }
+}

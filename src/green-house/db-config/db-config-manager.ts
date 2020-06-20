@@ -1,4 +1,4 @@
-import { databaseController } from "../../databaseController";
+import { databaseController } from "../../database-controller";
 import { EventEmitter } from "typed-event-emitter";
 
 export class ChangedConfig {
@@ -6,12 +6,14 @@ export class ChangedConfig {
 
     public newConfig: any;
 
+    public changedPart: any;
+
     public userInfo: string;
 }
 
 export class DbConfigManager extends EventEmitter {
 
-    onConfigChanged = this.registerEvent<(changedConfig: ChangedConfig) => void>();
+    public onConfigChanged = this.registerEvent<(changedConfig: ChangedConfig) => void>();
 
     public async get<T>(classRef: new() => T): Promise<T> {
         const defaultValue = new classRef();
@@ -39,10 +41,10 @@ export class DbConfigManager extends EventEmitter {
 
         const currentConfig = this.get(classRef);
         const newConfig = new classRef();
-        Object.assign(newConfig, defaultValue, currentConfig, value);
+        Object.assign(newConfig, currentConfig, value);
 
         await this.saveConfigToDb(key, newConfig);
-        this.emit(this.onConfigChanged, { key, newConfig, userInfo })
+        this.emit(this.onConfigChanged, { key, newConfig, userInfo, changedPart: value })
     }
 
     private async readConfigFromDb(key: string): Promise<any | null> {
@@ -84,9 +86,9 @@ export class DbConfigManager extends EventEmitter {
 export class WindowsConfig {
     automateOpenClose: boolean = false;
 
-    openTemperature: number = 15;
+    openTemperature: number = 30;
 
-    closeTemperature: number = 30;
+    closeTemperature: number = 15;
 }
 
 @Config('sensors')

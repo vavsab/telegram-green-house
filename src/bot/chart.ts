@@ -1,4 +1,4 @@
-import { databaseController } from '../databaseController';
+import { databaseController } from '../database-controller';
 import * as moment from 'moment';
 import * as fs from 'fs';
 import * as path from 'path';

@@ -11,14 +11,14 @@ import { AppConfiguration } from './app-configuration';
 import { IGreenHouse } from './green-house/green-house';
 import { Telegraf, Markup } from 'telegraf';
 import { gettext } from './gettext';
-import * as request from 'request';
 import * as _ from 'lodash';
 import { TelegrafContext } from 'telegraf/typings/context';
 import * as RedisSession from 'telegraf-session-redis';
 import { DbConfigManager } from './green-house/db-config/db-config-manager';
+import { SensorsSource } from './sensor/sensors-source';
 
 export class Bot {
-    public start(eventEmitter, config: AppConfiguration, greenHouse: IGreenHouse): void {
+    public start(sensorsSource: SensorsSource, config: AppConfiguration, greenHouse: IGreenHouse, dbConfig: DbConfigManager): void {
         const botModules : IBotModule[] = [];
     
         function tryAddBotModule<TModule extends IBotModule>(type: new() => TModule, isEnabled: boolean) {
@@ -70,7 +70,7 @@ export class Bot {
                 return next();
             }
     
-            app.telegram.sendMessage(adminChatId, `⚠️ ${gettext('Access denied for user {user}, chat: {chat}, message: {message}')
+            app.telegram.sendMessage(adminChatId, `⚠️ ${gettext('Access denied for user {user}\nChat: {chat}\nMessage: {message}')
                 .formatUnicorn({
                     user: JSON.stringify(ctx.from),
                     chat: JSON.stringify(ctx.chat),
@@ -115,13 +115,11 @@ export class Bot {
             });
         });
 
-        const dbConfig = new DbConfigManager();
-
         dbConfig.onConfigChanged(changedConfig => {
-            const message = `⚠️ ${gettext('Config was changed by {userInfo}. Key {key}, value: {value}').formatUnicorn({
+            const message = `⚠️ ${gettext('Config was changed by {userInfo}.\nKey {key}\nValue: {value}').formatUnicorn({
                 userInfo: changedConfig.userInfo,
                 key: changedConfig.key, 
-                value: JSON.stringify(changedConfig.newConfig)
+                value: JSON.stringify(changedConfig.changedPart)
             })}`;
 
             console.log(message);
@@ -136,7 +134,7 @@ export class Bot {
             config: config,
             allowedChatIds: allowedChatIds,
             adminChatId: adminChatId,
-            eventEmitter: eventEmitter,
+            sensorsSource: sensorsSource,
             greenHouse: greenHouse,
             dbConfig: dbConfig
         }
@@ -164,28 +162,6 @@ export class Bot {
             console.log('Telegram > Error: ', err)
         })
     
-        app.startPolling()
-        eventEmitter.emit('botStarted');
-
-        if (config.downDetector 
-            && config.downDetector.endpoint 
-            && config.downDetector.id
-            && config.downDetector.pingIntervalMs) {
-            console.log('Down detector is enabled');
-
-            const pingDownDetector = () => {
-                request.post(config.downDetector.endpoint, {form: { id: config.downDetector.id }}, err => {
-                    if (err) {
-                        console.log('DownDetector > Error: ', err);
-                    }
-                });
-
-                setTimeout(pingDownDetector, config.downDetector.pingIntervalMs);
-            };
-            
-            pingDownDetector();
-        } else {
-            console.log('Down detector is disabled');
-        }
+        app.startPolling();
     }
 }

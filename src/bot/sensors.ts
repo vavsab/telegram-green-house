@@ -66,11 +66,9 @@ export class Sensors implements IBotModule {
             }
         }
 
-        context.eventEmitter.on('botStarted', () => {
-            context.eventEmitter.on('sensorData', (data) => {
-                latestResult = data
-                sensorDataCallback()
-            });
+        context.sensorsSource.onDataReceived(x => {
+            latestResult = x;
+            sensorDataCallback();
         });
     }
 }
