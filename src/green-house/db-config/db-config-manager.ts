@@ -59,6 +59,7 @@ export class DbConfigManager extends EventEmitter {
 
             if (value) {
                 delete value.key;
+                delete value._id;
             }
             
             return value;
