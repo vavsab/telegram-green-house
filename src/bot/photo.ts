@@ -7,9 +7,10 @@ export class Photo implements IBotModule {
     }    
     
     initialize(context: InitializeContext): void {
-        context.configureAnswerFor('photo', async ctx => {
-             
+        context.configureAnswerFor('photo', async ctx => { 
+
             let result = await context.botApp.telegram.sendMessage(ctx.chat.id, `⏳ ${gettext('Photo is creating...')}`);
+            await context.botApp.telegram.sendChatAction(ctx.chat.id, 'upload_photo');
             let statusMessageId = result.message_id;
 
             try {

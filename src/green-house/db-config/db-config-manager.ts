@@ -2,13 +2,20 @@ import { databaseController } from "../../database-controller";
 import { EventEmitter } from "typed-event-emitter";
 
 export class ChangedConfig {
-    public key: string;
+    constructor(
+        public key: string,
+        public newConfig: any,
+        public changedPart: any,
+        public userInfo: string) {}
 
-    public newConfig: any;
+    public isOfType<T>(classRef: new() => T): boolean {
+        const configKey = (<any>this.newConfig).configKey;
+        if (!configKey) {
+            return false;
+        }
 
-    public changedPart: any;
-
-    public userInfo: string;
+        return (<any>new classRef()).configKey == configKey;
+    }
 }
 
 export class DbConfigManager extends EventEmitter {
@@ -39,12 +46,11 @@ export class DbConfigManager extends EventEmitter {
             throw 'Decorate config class with @Config';
         }
 
-        const currentConfig = this.get(classRef);
-        const newConfig = new classRef();
-        Object.assign(newConfig, currentConfig, value);
+        const newConfig = await this.get(classRef);
+        Object.assign(newConfig, value);
 
         await this.saveConfigToDb(key, newConfig);
-        this.emit(this.onConfigChanged, { key, newConfig, userInfo, changedPart: value })
+        this.emit(this.onConfigChanged, new ChangedConfig(key, newConfig, value, userInfo));
     }
 
     private async readConfigFromDb(key: string): Promise<any | null> {
@@ -66,8 +72,6 @@ export class DbConfigManager extends EventEmitter {
             return await db.collection('settings').findOne(filter);
         });
 
-        console.log(`Existing: ${JSON.stringify(existing)}`)
-
         await databaseController.run(async db => {
             const document = db.collection('settings');
             const valueToSave = { key, ...value };
@@ -78,7 +82,6 @@ export class DbConfigManager extends EventEmitter {
                 await document.insertOne(valueToSave);
             }
         });
-        
     }
 }
 

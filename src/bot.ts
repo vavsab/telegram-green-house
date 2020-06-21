@@ -16,9 +16,15 @@ import { TelegrafContext } from 'telegraf/typings/context';
 import * as RedisSession from 'telegraf-session-redis';
 import { DbConfigManager } from './green-house/db-config/db-config-manager';
 import { SensorsSource } from './sensor/sensors-source';
+import { WindowsAutomation } from './green-house/windows/windows-automation';
 
 export class Bot {
-    public start(sensorsSource: SensorsSource, config: AppConfiguration, greenHouse: IGreenHouse, dbConfig: DbConfigManager): void {
+    public start(
+        sensorsSource: SensorsSource,
+        config: AppConfiguration,
+        greenHouse: IGreenHouse,
+        dbConfig: DbConfigManager,
+        windowsAutomation: WindowsAutomation): void {
         const botModules : IBotModule[] = [];
     
         function tryAddBotModule<TModule extends IBotModule>(type: new() => TModule, isEnabled: boolean) {
@@ -125,6 +131,19 @@ export class Bot {
             console.log(message);
             app.telegram.sendMessage(adminChatId, message);
         });
+
+        windowsAutomation.onWindowsAction(x => {
+            let message = gettext('*Automation*: Too cold. Window #{address} will be closed now');
+
+            if (x.action == 'open') {
+                message = gettext('*Automation*: Too hot. Window #{address} will be opened now');
+            }
+
+            allowedChatIds.forEach(chatId => {
+                
+                app.telegram.sendMessage(chatId, message.formatUnicorn({ address: x.address }), { parse_mode: 'Markdown' });
+            })
+        })
     
         let initializeContext: InitializeContext = {
             configureAnswerFor: configureAnswerFor,

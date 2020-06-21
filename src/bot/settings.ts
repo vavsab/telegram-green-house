@@ -84,7 +84,7 @@ export class Settings implements IBotModule {
 
         context.configureAction(/settings$/, ctx => showStatus(ctx.editMessageText));
 
-        context.configureAction(/settings_windows$/, async ctx => {
+        const showWindowsSettings = async ctx => {
 
             const windowsConfig = await context.dbConfig.get(WindowsConfig);
 
@@ -106,16 +106,22 @@ export class Settings implements IBotModule {
             }
 
             ctx.editMessageText(messageParts.join('\n'), Markup.inlineKeyboard(settingsKeyboard).extra({ parse_mode: 'Markdown' }));
-        });
+        };
+
+        context.configureAction(/settings_windows$/, showWindowsSettings);
 
         context.configureAction(/settings_windows_automate_off/, async ctx => {
             const from = ctx.from;
             await context.dbConfig.set(WindowsConfig, { automateOpenClose: false }, `${from.first_name} ${from.last_name} (${from.id})`);
+            await ctx.answerCbQuery(gettext('Automation was switched off'));
+            await showWindowsSettings(ctx);
         });
 
         context.configureAction(/settings_windows_automate_on/, async ctx => {
             const from = ctx.from;
             await context.dbConfig.set(WindowsConfig, { automateOpenClose: true }, `${from.first_name} ${from.last_name} (${from.id})`);
+            await ctx.answerCbQuery(gettext('Automation was switched on'));
+            await showWindowsSettings(ctx);
         });
 
         const releaseActions = []

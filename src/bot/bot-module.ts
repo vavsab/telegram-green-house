@@ -4,6 +4,7 @@ import { TelegrafContext } from "telegraf/typings/context";
 import { HearsTriggers } from "telegraf/typings/composer";
 import { DbConfigManager } from "../green-house/db-config/db-config-manager";
 import { SensorsSource } from "../sensor/sensors-source";
+import Telegraf from "telegraf";
 
 export interface IBotContext extends TelegrafContext {
     session?:  IBotSession;
@@ -46,7 +47,7 @@ export class InitializeContext {
 
     public configureSessionAction: (sessionLock: RegExp,  answerCallback: (ctx: IBotContext, release: () => Promise<void>) => Promise<void>) => void;
 
-    public botApp: any;
+    public botApp: Telegraf<TelegrafContext>;
 
     public config: AppConfiguration;
 

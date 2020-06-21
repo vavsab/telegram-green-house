@@ -23,14 +23,15 @@ export class Video implements IBotModule {
         context.configureAction(/video\:(\d+)/, async ctx => {
             let videoDuration = ctx.match[1];
     
-            ctx.editMessageText(`⏳ ${gettext('Please wait while video with duration of *{duration} sec* is recording...').formatUnicorn({duration: videoDuration})}`, {parse_mode: 'Markdown'});
+            await ctx.editMessageText(`⏳ ${gettext('Please wait while video with duration of *{duration} sec* is recording...').formatUnicorn({duration: videoDuration})}`, {parse_mode: 'Markdown'});
+            await context.botApp.telegram.sendChatAction(ctx.chat.id, 'record_video');
 
             try {
                 let fileName = await context.greenHouse.recordVideo(parseInt(videoDuration));
                 await ctx.replyWithVideo({ source: fileName });
                 await ctx.deleteMessage();
             } catch (error) {
-                ctx.editMessageText(`⚠️ ${gettext('Failure')}: ${error}`);
+                await ctx.editMessageText(`⚠️ ${gettext('Failure')}: ${error}`);
             }
         });
     }

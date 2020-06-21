@@ -32,7 +32,7 @@ const sensorsSource = new SensorsSource(greenHouse);
 const sensorsDatabaseSaver = new SensorsDatabaseSaver(config, sensorsSource);
 const windowsAutomation = new WindowsAutomation(sensorsSource, greenHouse.getWindowsManager(), dbConfig);
 
-new Bot().start(sensorsSource, config, greenHouse, dbConfig);
+new Bot().start(sensorsSource, config, greenHouse, dbConfig, windowsAutomation);
 
 if (config.webPanel.isEnabled) {   
     new WebPanel().start(config, sensorsSource);

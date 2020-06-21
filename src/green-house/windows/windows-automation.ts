@@ -32,7 +32,7 @@ export class WindowsAutomation extends EventEmitter {
         this.latestConfig = await this.configManager.get(WindowsConfig);
 
         this.configManager.onConfigChanged(x => {
-            if (typeof(x.newConfig) !== typeof(WindowsConfig)) {
+            if (!x.isOfType(WindowsConfig)) {
                 return;
             }
 
@@ -68,6 +68,8 @@ export class WindowsAutomation extends EventEmitter {
                     console.log(`WindowsAutomation > Started to ${command} window #${lastAddress}`);
 
                     this.emit(this.onWindowsAction, { address: lastAddress, action: command });
+
+                    this.lastState = desiredState;
                 }
             }
         });
