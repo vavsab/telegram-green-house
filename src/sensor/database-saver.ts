@@ -1,15 +1,17 @@
 import { databaseController } from '../database-controller';
-import { AppConfiguration } from '../app-configuration';
 import { SensorsSource } from './sensors-source';
+import { DbConfigManager, SensorsConfig } from '../green-house/db-config/db-config-manager';
 
 export class SensorsDatabaseSaver {
     private isEnabled = false;
+    private timerHandler: NodeJS.Timeout | undefined;
+    private latestConfig: SensorsConfig | undefined;
 
     constructor(
-        private config: AppConfiguration,
+        private dbConfig: DbConfigManager,
         private sensorsSource: SensorsSource) {}
 
-    public start() {
+    public async start(): Promise<void> {
         if (this.isEnabled) {
             throw 'Cannot start sensors db saver twice';
         }
@@ -34,8 +36,27 @@ export class SensorsDatabaseSaver {
 
             latestResult = null;
         }
+
+        this.latestConfig = await this.dbConfig.get(SensorsConfig);
+
+        this.dbConfig.onConfigChanged(x => {
+            if (!x.isOfType(SensorsConfig)) {
+                return;
+            }
+
+            this.latestConfig = x.newConfig;
+            restartTimer();
+        });
     
-        setInterval(saveIntoDatabase, this.config.bot.saveToDbTimeoutInMinutes * 60 * 1000);
+        const restartTimer = () => {
+            if (this.timerHandler) {
+                clearInterval(this.timerHandler);
+            }
+
+            this.timerHandler = setInterval(saveIntoDatabase, this.latestConfig.saveIntoDbEveryXMinutes * 60 * 1000);
+        }
+        
+        restartTimer();
 
         this.isEnabled = true;
     }

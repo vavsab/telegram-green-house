@@ -100,7 +100,14 @@ export class SensorsConfig {
 
     coldTemperatureThreshold: number = 10;
 
-    temperatureThresholdViolationNotificationIntervalMinutes: number = 30;
+    notifyUserAboutTemperatureDangerEveryXMinutes: number = 30;
+
+    saveIntoDbEveryXMinutes: number = 5;
+}
+
+@Config('photo')
+export class PhotoConfig {
+    delayBeforeShotInSeconds: number = 5;
 }
 
 function Config(key: string) {

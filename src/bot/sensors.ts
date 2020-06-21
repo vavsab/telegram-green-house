@@ -35,7 +35,7 @@ export class Sensors implements IBotModule {
 
             var config = await dbConfig.get(SensorsConfig);
 
-            if (new Date().getTime() - lastWarningMessageDateTime.getTime() < 1000 * 60 * config.temperatureThresholdViolationNotificationIntervalMinutes) {
+            if (new Date().getTime() - lastWarningMessageDateTime.getTime() < 1000 * 60 * config.notifyUserAboutTemperatureDangerEveryXMinutes) {
                 return;
             }
 

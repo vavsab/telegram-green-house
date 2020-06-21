@@ -3,6 +3,7 @@ import { exec } from 'child_process';
 import { AppConfiguration } from "../app-configuration";
 import { WindowsManager } from "./windows/windows-manager";
 import { RS485DataBus } from "./windows/bus/rs485-data-bus";
+import { DbConfigManager, PhotoConfig } from "./db-config/db-config-manager";
 
 export class RaspiGreenHouse implements IGreenHouse {
     public readonly isEmulator: boolean;
@@ -12,10 +13,8 @@ export class RaspiGreenHouse implements IGreenHouse {
     private readonly lightsPin: number = 40; // GPIO21
     private readonly relayOff: number;
     private readonly relayOn: number;
-    private readonly config: AppConfiguration;
 
-    constructor(config: AppConfiguration) {
-        this.config = config;
+    constructor(private config: AppConfiguration, private dbConfig: DbConfigManager) {
         this.isEmulator = false;
         const htu21d = require('./htu21d-i2c');
         this.sensor = new htu21d();
@@ -62,9 +61,10 @@ export class RaspiGreenHouse implements IGreenHouse {
 
     public async takePhoto(): Promise<string> {
         const photoFileName = 'web-cam-shot.jpg';
+        const photoConfig = await this.dbConfig.get(PhotoConfig);
 
         await new Promise((resolve, reject) => {
-            exec(`fswebcam --jpeg 90 -r 1280x720 -D ${this.config.bot.takePhotoDelayInSeconds} ${photoFileName}`, 
+            exec(`fswebcam --jpeg 90 -r 1280x720 -D ${photoConfig.delayBeforeShotInSeconds} ${photoFileName}`, 
                 (error, stdout, stderr) => {
                     if (error) {
                         reject(`${error}, stdout: ${stderr}, stdout: ${stdout}`);

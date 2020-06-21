@@ -4,23 +4,22 @@ import { AppConfiguration } from "../app-configuration";
 import * as resources from "../resources";
 import { WindowsManager } from "./windows/windows-manager";
 import { EmulatorDataBus } from "./windows/bus/emulator-data-bus";
+import { DbConfigManager, PhotoConfig } from "./db-config/db-config-manager";
 
 export class EmulatorGreenHouse implements IGreenHouse {
     public readonly isEmulator: boolean;
     public readonly eventEmitter: events;
-    public readonly config: AppConfiguration;
     private readonly windowsManager: WindowsManager;
     public sensorsData : SensorsData;
     public isLightsOn: boolean;
     public isWaterOn: boolean;
 
-    constructor(config: AppConfiguration) {
+    constructor(private config: AppConfiguration, private dbConfig: DbConfigManager) {
         this.isEmulator = true;
         this.sensorsData = { temperature: 23, humidity: 50 };
         this.isWaterOn = false;
         this.isLightsOn = false;
         this.eventEmitter = new events();
-        this.config = config;
 
         this.windowsManager = new WindowsManager(config.bot.windowAddresses, new EmulatorDataBus());
     }
@@ -42,9 +41,11 @@ export class EmulatorGreenHouse implements IGreenHouse {
         this.eventEmitter.emit('lights-changed', isSwitchedOn);
     }
 
-    public takePhoto(): Promise<string> {
+    public async takePhoto(): Promise<string> {
+        const photoConfig = await this.dbConfig.get(PhotoConfig);
+
         return new Promise<string>(resolve => {
-            setTimeout(() => resolve(resources.getFilePath('emulator', 'photo-sample.jpg')), this.config.bot.takePhotoDelayInSeconds * 1000);
+            setTimeout(() => resolve(resources.getFilePath('emulator', 'photo-sample.jpg')), photoConfig.delayBeforeShotInSeconds * 1000);
         });
     }
 

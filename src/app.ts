@@ -23,13 +23,13 @@ gettextController.setLocale(config.language);
 
 let greenHouse: IGreenHouse;
 if (config.webEmulator.isEnabled) {
-    greenHouse = new EmulatorGreenHouse(config);
+    greenHouse = new EmulatorGreenHouse(config, dbConfig);
 } else {
-    greenHouse = new RaspiGreenHouse(config);
+    greenHouse = new RaspiGreenHouse(config, dbConfig);
 }
 
 const sensorsSource = new SensorsSource(greenHouse);
-const sensorsDatabaseSaver = new SensorsDatabaseSaver(config, sensorsSource);
+const sensorsDatabaseSaver = new SensorsDatabaseSaver(dbConfig, sensorsSource);
 const windowsAutomation = new WindowsAutomation(sensorsSource, greenHouse.getWindowsManager(), dbConfig);
 
 new Bot().start(sensorsSource, config, greenHouse, dbConfig, windowsAutomation);

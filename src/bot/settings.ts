@@ -4,9 +4,9 @@ import * as os from 'os';
 import { databaseController } from '../database-controller';
 import { Markup } from 'telegraf';
 import { gettext } from '../gettext';
-import { InlineKeyboardButton } from 'telegraf/typings/markup';
+import { InlineKeyboardButton, CallbackButton } from 'telegraf/typings/markup';
 import { IncomingMessage } from 'telegraf/typings/telegram-types';
-import { WindowsConfig, DbConfigManager, SensorsConfig } from '../green-house/db-config/db-config-manager';
+import { WindowsConfig, DbConfigManager, SensorsConfig, PhotoConfig } from '../green-house/db-config/db-config-manager';
 
 export class Settings implements IBotModule {
     initializeMenu(addKeyboardItem: (item: IKeyboardItem) => void): void {
@@ -19,13 +19,14 @@ export class Settings implements IBotModule {
         const showStatus = async reply => {
             try {
                 const sensorsConfig = await context.dbConfig.get(SensorsConfig);
+                const photoConfig = await context.dbConfig.get(PhotoConfig);
 
                 let messageParts = [];
                 messageParts.push(`↔️ ${gettext('Allowed range')} 🌡: *${sensorsConfig.coldTemperatureThreshold} - ${sensorsConfig.hotTemperatureThreshold} °C*`);
-                messageParts.push(`⚡️ ${gettext('Notification on exceeding: every *{min} min*').formatUnicorn({ min: sensorsConfig.temperatureThresholdViolationNotificationIntervalMinutes })}`)
-                messageParts.push(`💾 ${gettext('Save sensors data: every *{min} min*').formatUnicorn({min: botConfig.saveToDbTimeoutInMinutes})}`)
-                messageParts.push(`🕘 ${gettext('Delay before taking a photo: *{sec} sec*').formatUnicorn({sec: botConfig.takePhotoDelayInSeconds})}`)
-                messageParts.push(`🔆 ${gettext('Lights on range: {range}').formatUnicorn({range: botConfig.switchOnLightsTimeRange})}`)
+                messageParts.push(`⚡️ ${gettext('Notification on exceeding: every *{min} min*').formatUnicorn({ min: sensorsConfig.notifyUserAboutTemperatureDangerEveryXMinutes })}`)
+                messageParts.push(`💾 ${gettext('Save sensors data: every *{min} min*').formatUnicorn({ min: sensorsConfig.saveIntoDbEveryXMinutes })}`)
+                messageParts.push(`🕘 ${gettext('Delay before taking a photo: *{sec} sec*').formatUnicorn({ sec: photoConfig.delayBeforeShotInSeconds })}`)
+                messageParts.push(`🔆 ${gettext('Lights on range: {range}').formatUnicorn({ range: botConfig.switchOnLightsTimeRange })}`)
 
                 let diskspaceInfo = await new Promise((resolve, reject) => {
                     const rootDir = os.platform().toString() == 'win32' ? 'C' : '/';
@@ -59,18 +60,36 @@ export class Settings implements IBotModule {
                 
                 messageParts.push(databaseSpaceInfo)
 
-                const settingsKeyboard: any[] = [];
+                const buttons: InlineKeyboardButton[] = [];
                 
                 if (context.config.webPanel.isEnabled && context.config.webPanel.link) {
-                    settingsKeyboard.push(Markup.urlButton(gettext('Website'), context.config.webPanel.link));
+                    buttons.push(Markup.urlButton(gettext('Website'), context.config.webPanel.link));
                 }
 
                 if (context.config.webEmulator.isEnabled && context.config.webEmulator.link) {
-                    settingsKeyboard.push(Markup.urlButton(gettext('Emulator'), context.config.webEmulator.link));
+                    buttons.push(Markup.urlButton(gettext('Emulator'), context.config.webEmulator.link));
                 }
 
-                settingsKeyboard.push(Markup.callbackButton(`✏️ ${gettext('Temperature')}`, 'settings_sensors_threshold'));
-                settingsKeyboard.push(Markup.callbackButton(`⚙️ ${gettext('Windows')}`, 'settings_windows'));
+                buttons.push(Markup.callbackButton(`✏️↔️ ${gettext('Safe range')}`, 'settings_sensors_threshold'));
+                buttons.push(Markup.callbackButton(`✏️⚡️ ${gettext('Notification interval')}`, 'settings_sensors_notification'));
+                buttons.push(Markup.callbackButton(`✏️💾 ${gettext('Save interval')}`, 'settings_sensors_db_save'));
+                buttons.push(Markup.callbackButton(`✏️🕘 ${gettext('Photo delay')}`, 'settings_photo_delay'));
+                buttons.push(Markup.callbackButton(`⚙️ ${gettext('Windows')}`, 'settings_windows'));
+
+                const settingsKeyboard: InlineKeyboardButton[][] = [];
+                let settingsKeyboardLine: InlineKeyboardButton[] = [];
+                for (let i = 0; i < buttons.length; i++) {
+                    if (i % 2 === 0 && i !== 0) {
+                        settingsKeyboard.push(settingsKeyboardLine);
+                        settingsKeyboardLine = [];
+                    }
+
+                    settingsKeyboardLine.push(buttons[i]);
+                }
+
+                if (settingsKeyboardLine.length > 0) {
+                    settingsKeyboard.push(settingsKeyboardLine);
+                }
 
                 reply(messageParts.join('\n'), Markup.inlineKeyboard(settingsKeyboard).extra({ parse_mode: 'Markdown' }));
             } catch (err) {
@@ -177,16 +196,47 @@ export class Settings implements IBotModule {
             });
         }
 
-        configureSetting('windows_closeOpenThreshold', gettext('Edit close/open range (format: "14-23" or "14 23")'), this.rangeApplier(5, 50, WindowsConfig, (down, up) => {
+        configureSetting('windows_closeOpenThreshold', gettext('Edit close/open range (format: "15-30" or "15 30")'), this.rangeApplier(5, 50, WindowsConfig, (down, up) => {
             return { closeTemperature: down, openTemperature: up };
         }), 'settings_windows');
 
-        configureSetting('sensors_threshold', gettext('Edit temperature range (format: "14-23" or "14 23")'), this.rangeApplier(5, 50, SensorsConfig, (down, up) => {
+        configureSetting('sensors_threshold', gettext('Edit temperature range (format: "15-30" or "15 30")'), this.rangeApplier(5, 50, SensorsConfig, (down, up) => {
             return { coldTemperatureThreshold: down, hotTemperatureThreshold: up };
+        }), 'settings');
+
+        configureSetting('sensors_notification', gettext('Edit sensors notification internal (in minutes)'), this.integerApplier(1, 120, SensorsConfig, (value) => {
+            return { notifyUserAboutTemperatureDangerEveryXMinutes: value };
+        }), 'settings');
+
+        configureSetting('sensors_db_save', gettext('Edit interval of saving sensors data into db (in minutes)'), this.integerApplier(1, 120, SensorsConfig, (value) => {
+            return { saveIntoDbEveryXMinutes: value };
+        }), 'settings');
+
+        configureSetting('photo_delay', gettext('Edit photo shot delay (in seconds)'), this.integerApplier(0, 60, PhotoConfig, (value) => {
+            return { delayBeforeShotInSeconds: value };
         }), 'settings');
     }
 
-    rangeApplier<TConfig>(downLimit: number, upLimit: number, configRef: new() => TConfig, setter: (down: number, up: number) => Partial<TConfig>): ValueApplier {
+    integerApplier<TConfig>(minValue: number, maxValue: number, configRef: new() => TConfig, configBuilder: (value: number) => Partial<TConfig>): ValueApplier {
+        return async applierContext => {
+            const regex = /\d+/;
+            const value = parseInt(applierContext.value);
+            if (isNaN(value) || !regex.test(applierContext.value)) {
+                return { success: false, details: gettext('Invalid integer number format.') };
+            }
+
+            if (value < minValue || value > maxValue) {
+                return  { success: false, details: gettext('Value must be in range [{min}..{max}]').formatUnicorn({ min: minValue, max: maxValue }) };
+            }
+            
+            const from = applierContext.botContext.from;
+            await applierContext.dbConfig.set(configRef, configBuilder(value), `${from.first_name} ${from.last_name} (${from.id})`);
+
+            return { success: true, details: `${value}` };
+        };
+    }
+
+    rangeApplier<TConfig>(downLimit: number, upLimit: number, configRef: new() => TConfig, configBuilder: (down: number, up: number) => Partial<TConfig>): ValueApplier {
         return async applierContext => {
             const regex = /(\d+)[ \-](\d+)/;
             const regexArray = regex.exec(applierContext.value);
@@ -207,7 +257,7 @@ export class Settings implements IBotModule {
             }
 
             const from = applierContext.botContext.from;
-            await applierContext.dbConfig.set(configRef, setter(down, up), `${from.first_name} ${from.last_name} (${from.id})`);
+            await applierContext.dbConfig.set(configRef, configBuilder(down, up), `${from.first_name} ${from.last_name} (${from.id})`);
 
             return { success: true, details: `${down}...${up}` };
         };

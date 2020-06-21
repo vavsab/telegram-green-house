@@ -43,10 +43,6 @@ export class BotConfiguration {
 
     public weatherLink: string;
 
-    public saveToDbTimeoutInMinutes: number;
-
-    public takePhotoDelayInSeconds: number;
-
     public switchOnLightsTimeRange: string;
 
     public grantAccessForAllUsers: boolean;
