@@ -1,5 +1,5 @@
 {  
-  "separateMinorPatch": false,
+  "separateMajorMinor": false,
   "packageRules": [
     {
       "matchPackagePatterns": "*",
