@@ -1,0 +1,9 @@
+{  
+  "separateMinorPatch": false,
+  "packageRules": [
+    {
+      "matchPackagePatterns": "*",
+      "groupName": ["all"]
+    }
+  ]
+}
