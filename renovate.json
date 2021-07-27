@@ -3,7 +3,9 @@
   "packageRules": [
     {
       "matchPackagePatterns": "*",
-      "groupName": ["all"]
+      "groupName": ["all"],
+      "automerge": true,
+      "requiredStatusChecks": null
     }
   ]
 }
