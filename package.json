@@ -42,7 +42,7 @@
     "natives": "^1.1.6",
     "node-gettext": "^3.0.0",
     "request": "^2.88.0",
-    "socket.io": "^1.7.3",
+    "socket.io": "^2.4.0",
     "socket.io-client": "^4.0.0",
     "telegraf": "^4.0.0",
     "telegraf-session-redis": "^5.1.0",
