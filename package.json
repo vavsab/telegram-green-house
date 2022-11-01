@@ -56,7 +56,7 @@
     "@types/request": "^2.48.2",
     "@types/socket.io": "^1.4.36",
     "gettext-extractor": "^3.4.0",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.2",
     "typescript": "^3.9.3"
   },
   "author": "Ivan Sabelnikov",
